@@ -1,0 +1,6 @@
+# Site de uma página: tudo liberado.
+User-agent: *
+Allow: /
+
+# PLACEHOLDER (domínio a definir): preencha "dominio" em seo.config.json e rode npm run build
+# Sitemap: https://dominio-a-definir.invalid/sitemap.xml

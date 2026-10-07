@@ -1,0 +1,124 @@
+/* Nav do topo (§4/01 camadas 8, 9, 10). Overlay de menu e navegação entre atos: nav.css. */
+
+.site-header {
+  container-type: inline-size;
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: var(--gutter) var(--gutter) 0;
+}
+
+/* ── 8 · hambúrguer ─────────────────────────────────────── */
+.menu-toggle {
+  --bars-w: clamp(1.25rem, 1.9vw, 1.75rem);
+  --bars-h: clamp(.875rem, 1.4vw, 1.3rem);
+  justify-self: start;
+  display: grid;
+  align-content: space-between;
+  /* caixa de 44 × 44 (alvo de toque) com o desenho das barras no meio */
+  box-sizing: border-box;
+  width: var(--touch);
+  height: var(--touch);
+  padding: calc((var(--touch) - var(--bars-h)) / 2) calc((var(--touch) - var(--bars-w)) / 2);
+  margin-left: calc((var(--bars-w) - var(--touch)) / 2);
+  color: var(--text-base);
+}
+
+.menu-toggle__bar {
+  display: block;
+  height: 1.5px;
+  background: currentColor;
+  border-radius: var(--r-pill);
+  transform-origin: center;
+  /* fechar: 200 ms (--t-fade); abrir: 320 ms, como o overlay */
+  transition: transform var(--t-fade) var(--ease-soft), opacity var(--t-fade) var(--ease-soft);
+}
+.menu-toggle[aria-expanded="true"] .menu-toggle__bar { transition-duration: 320ms; transition-timing-function: var(--ease-out); }
+@media (prefers-reduced-motion: reduce) { .menu-toggle__bar { transition: none !important; } }
+
+/* aberto: as 3 barras viram X (as de fora giram até o centro, a do meio some) */
+.menu-toggle[aria-expanded="true"] .menu-toggle__bar:nth-child(1) {
+  transform: translateY(calc(var(--bars-h) / 2 - .75px)) rotate(45deg);
+}
+.menu-toggle[aria-expanded="true"] .menu-toggle__bar:nth-child(2) { opacity: 0; }
+.menu-toggle[aria-expanded="true"] .menu-toggle__bar:nth-child(3) {
+  transform: translateY(calc(var(--bars-h) / -2 + .75px)) rotate(-45deg);
+}
+
+/* ── 9 · logo ───────────────────────────────────────────── */
+.logo {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  min-height: var(--touch);  /* alvo de toque */
+  min-width: var(--touch);
+  gap: clamp(.25rem, .6vw, .5rem);
+  color: var(--chrome-100);
+}
+
+.logo__name {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-variation-settings: "wdth" 100;
+  font-size: var(--fs-logo);
+  letter-spacing: var(--ls-logo);
+  text-indent: var(--ls-logo); /* compensa o tracking à direita */
+  line-height: 1;
+}
+
+.logo__sub {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: var(--fs-logo-sub);
+  letter-spacing: var(--ls-logo-sub);
+  text-indent: var(--ls-logo-sub);
+  line-height: 1;
+  color: var(--text-base);
+}
+
+/* ── 10 · pílula "Reservar" (D25): link para #ato-4, visual da pílula do mockup ── */
+.pill-cta {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(.5rem, 1vw, .8rem);
+  min-height: var(--ctl-size);
+  padding-inline: clamp(.85rem, 1.4vw, 1.25rem) clamp(.75rem, 1.1vw, 1rem);
+  border: var(--border-hud);
+  border-radius: var(--r-pill);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: var(--fs-hud);
+  letter-spacing: var(--ls-hud);
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--text-base);
+  transition: border-color var(--t-fast) var(--ease-soft), background-color var(--t-fast) var(--ease-soft), color var(--t-fast) var(--ease-soft);
+}
+
+.pill-cta:hover {
+  border-color: var(--chrome-100);
+  background: var(--chrome-100);
+  color: var(--ink-900);
+}
+
+.pill-cta:focus-visible {
+  outline: 2px solid var(--amber-400);
+  outline-offset: 3px;
+  border-color: var(--chrome-100);
+}
+
+.pill-cta__icon { width: clamp(.875rem, 1.2vw, 1.1rem); flex: none; }
+
+/* header estreito (320 px, ou texto ampliado): a pílula fica só com a seta;
+   o texto continua no link para leitor de tela */
+@container (max-width: 19rem) {
+  .pill-cta { padding-inline: 0; width: var(--ctl-size); justify-content: center; }
+  .pill-cta span {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap;
+  }
+}

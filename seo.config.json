@@ -1,0 +1,4 @@
+{
+  "_leia": "Domínio final do site, com https:// e / no fim (ex.: https://www.exemplo.com.br/). Vazio = placeholders comentados. Depois de preencher: npm run build. Ver DESIGN.md §10.",
+  "dominio": ""
+}

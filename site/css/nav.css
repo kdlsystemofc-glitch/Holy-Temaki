@@ -1,0 +1,293 @@
+/* Navegação entre atos (§4/01 camadas 11–13) e overlay de menu (camada 17).
+   Trilho, progresso e player ficam fora das seções: cada seção é um stacking context
+   isolado, e dentro do hero eles seriam cobertos pelos atos seguintes. */
+
+/* ── posicionamento ─────────────────────────────────────────
+   Mobile: absolutos no topo do documento, sobre o hero (fixos cobririam os cards).
+   Desktop: fixos na viewport, acompanhando todos os atos. */
+.act-nav { --rail-y: .33; }              /* retrato: trilho no terço superior do hero */
+@media (min-width: 48rem) and (min-aspect-ratio: 1/1) { .act-nav { --rail-y: .515; } } /* paisagem: centro do trilho no mockup (225/437) */
+
+.rail,
+.progress,
+.player {
+  position: absolute;
+  z-index: 15;
+  transition: opacity 200ms var(--ease-soft), visibility 200ms;
+}
+
+.rail {
+  left: calc(var(--gutter) - var(--ctl-size) * .25);
+  top: calc(var(--h-hero) * var(--rail-y));
+  translate: 0 -50%;
+}
+
+.progress {
+  right: var(--gutter);
+  top: calc(var(--h-hero) * var(--rail-y));
+  translate: 0 -50%;
+}
+
+.player {
+  left: var(--gutter);
+  top: calc(var(--h-hero) - var(--gutter) - var(--ctl-size));
+}
+
+/* fixos só em paisagem com altura: em telas baixas (celular deitado) o hero é mais alto
+   que a tela e um player fixo cairia em cima do wordmark */
+@media (min-width: 48rem) and (min-aspect-ratio: 1/1) and (min-height: 32rem) {
+  .rail,
+  .progress,
+  .player { position: fixed; }
+
+  .rail,
+  .progress { top: 51.5%; }   /* centro do trilho no mockup: 225 / 437 */
+
+  /* o player sobe junto quando o rodapé entra na tela (--nav-lift, js/nav.js):
+     nunca cobre o texto do rodapé e nunca some (⏮ continua disponível) */
+  .player { top: auto; bottom: calc(var(--gutter) + var(--nav-lift, 0px)); }
+
+  /* trilho e progresso saem de cena quando o rodapé invade a faixa central (e saem do foco) */
+  :root[data-at-footer] .rail,
+  :root[data-at-footer] .progress { opacity: 0; visibility: hidden; }
+}
+
+/* Regime retrato e baixo (< 50rem de altura: 360×740, 320×568, ou texto a 200 %): com alvos de 44 px o
+   trilho tem ~210 px e não cabe entre o rótulo e o wordmark. Ele duplica o menu e o player,
+   então sai de cena — junto com o progresso, que é o espelho dele. */
+@media (max-width: 47.99rem) and (max-height: 50rem), (max-aspect-ratio: 999/1000) and (max-height: 50rem) {
+  .rail,
+  .progress { display: none; }
+}
+
+/* ── 11 · trilho ────────────────────────────────────────── */
+.rail__list {
+  display: grid;
+  justify-items: center;
+}
+
+.rail__tick {
+  display: grid;
+  place-items: center;
+  width: var(--ctl-size);
+  height: var(--touch); /* alvo de toque de 44 px (o traço visível continua curto) */
+}
+
+/* Traço em duas camadas com a altura do traço ativo: ::before apagado, ::after aceso.
+   Inativo = scaleY(.45) (≈ 6,5 px de 14 no desktop, 4 de 9 no celular), só o apagado aparece.
+   Ativo = cresce para scaleY(1) e o aceso surge por opacity, em 300 ms (§5 Hero, "Trilho").
+   Só transform/opacity: nada de animar height. */
+.rail__tick::before,
+.rail__tick::after {
+  content: "";
+  grid-area: 1 / 1;
+  width: 1.5px;
+  height: clamp(9px, 1vw, 14px);
+  border-radius: var(--r-pill);
+  background: var(--text-faint);
+  transform: scaleY(.45);
+  transition: transform 300ms var(--ease-out), opacity 300ms var(--ease-out);
+}
+
+.rail__tick::after {
+  background: var(--chrome-100);
+  opacity: 0;
+}
+
+.rail__tick[aria-current]::before,
+.rail__tick[aria-current]::after { transform: none; }
+.rail__tick[aria-current]::after { opacity: 1; }
+
+.rail__tick:hover::before { background: var(--text-base); }
+
+/* ⏸: nada se move — o traço ativo troca na hora */
+:root[data-motion="paused"] .rail__tick::before,
+:root[data-motion="paused"] .rail__tick::after { transition: none; }
+
+
+
+.rail__knob {
+  display: grid;
+  place-items: center;
+  width: calc(var(--ctl-size) * .5);
+  aspect-ratio: 1;
+  margin-block: clamp(.25rem, .5vw, .5rem);
+  border: var(--border-hud);
+  border-radius: var(--r-full);
+  color: var(--text-mid);
+}
+.rail__knob svg { width: 70%; }
+
+/* ── 12 · progresso de scroll ───────────────────────────── */
+.progress {
+  --progress: 0;
+  width: 1px;
+  height: clamp(6rem, 11.7vw, 11rem);
+  background: color-mix(in srgb, var(--mist-200) 45%, transparent);
+}
+
+.progress__dot {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--progress) * 100%);
+  translate: -50% -50%;
+  width: calc(var(--ctl-size) * .5);
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--mist-200) 55%, transparent);
+  border-radius: var(--r-full);
+  background: radial-gradient(circle, var(--chrome-100) 0 18%, var(--ink-900) 22%);
+}
+
+/* ── 13 · player ────────────────────────────────────────── */
+.player {
+  display: flex;
+  gap: clamp(.5rem, 1vw, 1rem);
+}
+
+.player__btn {
+  display: grid;
+  place-items: center;
+  width: var(--ctl-size);
+  aspect-ratio: 1;
+  border: var(--border-hud);
+  border-radius: var(--r-full);
+  background: color-mix(in srgb, var(--ink-900) 40%, transparent);
+  color: var(--text-base);
+  transition: border-color var(--t-fast) var(--ease-soft);
+}
+
+.player__btn:hover { border-color: var(--chrome-100); }
+.player__btn svg { width: 38%; }
+.player__btn[aria-disabled="true"] { opacity: .4; cursor: default; }
+.player__btn[aria-disabled="true"]:hover { border-color: color-mix(in srgb, var(--chrome-100) 18%, transparent); }
+
+.player__icon-play { display: none; }
+.player__btn[aria-pressed="true"] .player__icon-pause { display: none; }
+.player__btn[aria-pressed="true"] .player__icon-play { display: block; }
+
+/* ── 17 · overlay de menu ───────────────────────────────── */
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: 19;               /* abaixo do header (20), que traz o hambúrguer em X */
+  display: none;
+  align-content: center;
+  padding: calc(var(--gutter) * 2 + var(--ctl-size)) var(--gutter) var(--gutter);
+  overflow: hidden auto;
+  overscroll-behavior: contain; /* iOS: a rolagem do overlay não arrasta a página */
+  background: var(--ink-900);
+  color: var(--text-base);
+  isolation: isolate;
+  /* Fechado: invisível e fora da árvore de acessibilidade (visibility: hidden) — aplicado só
+     DEPOIS do fade de saída (200 ms, --t-fade), nunca display: none no meio dele */
+  display: grid;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity var(--t-fade) var(--ease-soft), visibility 0s linear var(--t-fade);
+}
+
+/* sem JS o overlay abre por :target (link #menu); com JS, pela classe. Abertura: fade de
+   320 ms e visibility na hora — os itens são clicáveis desde o 1º quadro */
+:root:not(.js) .menu:target,
+.menu.is-open {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 320ms var(--ease-out), visibility 0s;
+}
+
+/* itens em sequência: translateY(16px) + fade, 500 ms, 60 ms entre eles. Só na abertura; o
+   fechamento é só o fade do overlay. Em "reduced" o reset.css zera a animação (fica o fade) */
+@keyframes menu-item { from { transform: translateY(16px); opacity: 0; } }
+.menu.is-open .menu__list > li { animation: menu-item 500ms var(--ease-out) backwards; }
+.menu.is-open .menu__list > li:nth-child(2) { animation-delay: 60ms; }
+.menu.is-open .menu__list > li:nth-child(3) { animation-delay: 120ms; }
+.menu.is-open .menu__list > li:nth-child(4) { animation-delay: 180ms; }
+/* ⏸ congela animações: parados no 1º quadro os itens ficariam invisíveis — entram direto */
+:root[data-motion="paused"] .menu.is-open .menu__list > li { animation: none; }
+
+/* névoa sutil: plate de fundo preto em screen sobre o próprio fundo do overlay.
+   O wrapper recorta (overflow não cria stacking context, então o screen ainda vê o fundo). */
+.menu__bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden; /* fallback Safari < 16 */
+  overflow: clip;
+  pointer-events: none;
+}
+
+.menu__mist {
+  position: absolute;
+  left: -10%;
+  bottom: -22%;
+  width: 120%;
+  max-width: none;
+  opacity: .32;
+  filter: grayscale(.8);
+  pointer-events: none;
+}
+
+/* deriva lenta só com o menu aberto (fechado, nada anima nem é pintado); estática em "low" */
+@keyframes menu-nevoa { to { translate: -4% 0; } }
+.js-motion .menu.is-open .menu__mist { animation: menu-nevoa 40s ease-in-out infinite alternate; }
+.js-motion[data-quality="low"] .menu.is-open .menu__mist { animation: none; }
+
+@media (max-width: 47.99rem) {
+  /* no retrato o plate fica baixo demais: mais largo, para a névoa subir na tela */
+  .menu__mist { left: -80%; width: 260%; bottom: -6%; }
+}
+
+.menu__nav { width: 100%; }
+
+.menu__list {
+  display: grid;
+  gap: clamp(.25rem, 1vw, .75rem);
+}
+
+.menu__link {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  min-height: var(--touch);   /* alvo de toque */
+  padding-block: var(--sp-2);
+  border-bottom: var(--border-rule);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-variation-settings: "wdth" 100;
+  font-size: var(--fs-display);
+  letter-spacing: var(--ls-title);
+  line-height: var(--lh-display);
+  color: var(--text-base);
+  transition: color var(--t-fast) var(--ease-soft);
+}
+
+.menu__link:hover,
+.menu__link:focus-visible { color: var(--chrome-100); }
+
+.menu__num,
+.menu__hint {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: var(--fs-label);
+  letter-spacing: var(--ls-label);
+  color: var(--text-mid);
+}
+
+.menu__num { min-width: 3ch; }
+.menu__hint { margin-left: auto; }
+
+/* só sem JS; com JS quem fecha é o hambúrguer em X */
+.menu__close {
+  position: absolute;
+  /* abaixo da linha do header, para não encostar na pílula 432Hz */
+  inset: calc(var(--gutter) * 2 + var(--ctl-size)) var(--gutter) auto auto;
+  font-size: var(--fs-label);
+  letter-spacing: var(--ls-label);
+  color: var(--text-mid);
+}
+.js .menu__close { display: none; }
+
+/* menu aberto: página travada; o header fica fixo por cima do overlay.
+   --scrollbar (js/menu.js) repõe a largura da barra de rolagem: nada se desloca. */
+:root.menu-open { overflow: hidden; padding-right: var(--scrollbar, 0px); }
+:root.menu-open .site-header { position: fixed; }

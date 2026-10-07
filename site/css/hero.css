@@ -1,0 +1,307 @@
+/* ACT I — THE ARRIVAL (§4/01, camadas 1–16). Layout estático: sem animação.
+   Posições em % do quadro, medidas em design/secoes/01-hero.png (768×437). */
+
+.hero {
+  /* geometria — mobile primeiro (quadro retrato) */
+  /* largura limitada também pela altura: em tablet em pé (768×1024) 76 % da largura
+     desceria o nigiri por cima do wordmark */
+  --nigiri-w: min(76%, calc(var(--h-hero) * .38));
+  --nigiri-x: calc((100% - var(--nigiri-w)) / 2);
+  --nigiri-y: 21%;
+  --wm-top: 49%;          /* topo da maiúscula */
+  /* abaixo da linha do header (gutter + alvo de 44 px), mesmo em telas baixas */
+  --label-y: max(12%, calc(var(--gutter) + var(--touch) + var(--sp-4)));
+
+  position: relative;
+  height: var(--h-hero);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+@media (min-width: 48rem) and (min-aspect-ratio: 1/1) {
+  .hero {
+    --nigiri-x: 33.7%;
+    --nigiri-y: 8.7%;
+    --nigiri-w: 33.5%;
+    --wm-top: 52.6%;      /* 226 / 437, +0.9% compensa o overshoot de S/A da Archivo */
+    --label-y: 18%;
+    --floor-h: 30%;
+  }
+}
+
+/* ── 1 · fundo ──────────────────────────────────────────── */
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    /* lâmina d'água abaixo da linha de base */
+    linear-gradient(180deg, transparent 0 calc(var(--wm-top) + var(--fs-wordmark) * var(--cap-ratio) * .9),
+      color-mix(in srgb, var(--steel-400) 22%, transparent) calc(var(--wm-top) + var(--fs-wordmark) * var(--cap-ratio) * 1.02),
+      color-mix(in srgb, var(--ink-700) 45%, transparent) 86%, var(--ink-900) 100%),
+    radial-gradient(120% 90% at 50% 28%, var(--ink-700) 0%, var(--ink-850) 45%, var(--ink-900) 100%);
+}
+
+/* ── 2 · névoa ──────────────────────────────────────────── */
+.hero__smoke { position: absolute; inset: 0; z-index: -1; mix-blend-mode: var(--plate-blend); }
+
+.hero__smoke-layer {
+  position: absolute;
+  max-width: none;
+  opacity: var(--smoke-hero-opacity);
+  filter: grayscale(.75) brightness(.9);
+  /* faixa no terço médio × esmaecimento lateral */
+  -webkit-mask-image:
+    linear-gradient(180deg, transparent 0%, #000 45%, #000 70%, transparent 100%),
+    linear-gradient(90deg, transparent 0%, #000 22%, #000 78%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(180deg, transparent 0%, #000 45%, #000 70%, transparent 100%),
+    linear-gradient(90deg, transparent 0%, #000 22%, #000 78%, transparent 100%);
+  mask-composite: intersect;
+}
+
+.hero__smoke-layer--l { width: 58%; left: -12%; top: 24%; }
+.hero__smoke-layer--r { width: 58%; right: -12%; top: 22%; transform: scaleX(-1); }
+.hero__smoke-layer--c { width: 110%; left: -5%; top: 30%; opacity: calc(var(--smoke-hero-opacity) * .35); }
+
+@media (max-width: 47.99rem), (max-aspect-ratio: 999/1000) {
+  .hero__smoke-layer--l,
+  .hero__smoke-layer--r { width: 130%; top: 36%; }
+  .hero__smoke-layer--l { left: -60%; }
+  .hero__smoke-layer--r { right: -60%; }
+  .hero__smoke-layer--c { width: 220%; left: -60%; top: 36%; }
+}
+
+/* ── 3 · bolhas ─────────────────────────────────────────── */
+.hero__bubbles { position: absolute; inset: 19% 0 42%; z-index: 1; pointer-events: none; }
+@media (min-width: 48rem) and (min-aspect-ratio: 1/1) { .hero__bubbles { inset: 0; } }
+
+.hero__bubbles i {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: max(4px, calc(var(--d) * 1.25vw));
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--chrome-100) 60%, transparent);
+  border-radius: var(--r-full);
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--chrome-100) 85%, transparent) 0 16%, color-mix(in srgb, var(--mist-200) 12%, transparent) 40%, transparent 70%);
+}
+
+/* ── 4 · nigiri ─────────────────────────────────────────── */
+.hero__nigiri {
+  position: absolute;
+  z-index: 2;
+  left: var(--nigiri-x);
+  top: var(--nigiri-y);
+  width: var(--nigiri-w);
+  rotate: -14deg;
+}
+
+/* ── 5 · wordmark cromado ───────────────────────────────── */
+.hero__wordmark {
+  position: absolute;
+  z-index: 4;
+  inset-inline: 0;
+  top: var(--wm-top);
+  display: flex;
+  justify-content: center;
+}
+
+.hero__wordmark-text {
+  position: relative;
+  display: block;
+  font-family: var(--font-display);
+  font-weight: var(--fw-wordmark);
+  font-variation-settings: "wdth" var(--wdth-wordmark);
+  font-size: var(--fs-wordmark);
+  letter-spacing: var(--ls-wordmark);
+  line-height: 1;
+  text-box: trim-both cap alphabetic; /* caixa = altura da maiúscula; base = linha d'água */
+  text-transform: uppercase;
+  /* camada de baixo = aresta do bisel */
+  color: var(--steel-400);
+  filter:
+    drop-shadow(0 2px 0 var(--ink-800))
+    drop-shadow(0 0 40px color-mix(in srgb, var(--mist-200) 25%, transparent));
+}
+
+/* Sem text-box (Firefox, Safari < 18.2): line-height .73 põe o topo da maiúscula no topo da
+   caixa e a linha de base ~.03em acima do fundo — mesma geometria do trim (medido: ascent .88,
+   descent .21, cap .70 → (.73 − 1.09) / 2 + .88 = .70). */
+@supports not (text-box: trim-both cap alphabetic) {
+  .hero__wordmark-text { line-height: .73; }
+}
+
+/* camada de cima = cromo, deslocada 1 px para revelar o bisel */
+.hero__wordmark-text::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  text-box: inherit;
+  translate: -1px -1px;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--mist-100) 70%, transparent);
+  background: linear-gradient(180deg,
+    var(--chrome-100) 0%,
+    var(--mist-200) 16%,
+    var(--steel-400) 42%,
+    var(--chrome-900) 55%,
+    var(--mist-100) 68%,
+    var(--steel-300) 84%,
+    var(--chrome-900) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ── 6 · piso em grade ──────────────────────────────────── */
+.hero__floor {
+  position: absolute;
+  z-index: 3;
+  left: 8%;
+  width: 84%;
+  /* centro do plano na linha d'água */
+  top: calc(var(--wm-top) + var(--fs-wordmark) * var(--cap-ratio) * .82);
+  height: var(--floor-h, 16%);
+  perspective: 24rem;
+  perspective-origin: 50% 0%;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(52% 70% at 50% 18%, #000 45%, transparent 100%);
+  mask-image: radial-gradient(52% 70% at 50% 18%, #000 45%, transparent 100%);
+}
+
+.hero__floor-plane {
+  position: absolute;
+  inset: 0;
+  --grid-line: color-mix(in srgb, var(--mist-200) 38%, transparent);
+  --cell: clamp(8px, 1.1vw, 16px);
+  background:
+    repeating-linear-gradient(90deg, var(--grid-line) 0 1px, transparent 1px var(--cell)),
+    repeating-linear-gradient(0deg, var(--grid-line) 0 1px, transparent 1px var(--cell));
+  transform: rotateX(70deg);
+  transform-origin: 50% 0%;
+  filter: url(#wave);
+}
+
+/* ── 7 · espelho d'água ─────────────────────────────────── */
+.hero__reflection {
+  position: absolute;
+  z-index: 3;
+  inset-inline: 0;
+  /* começa na linha de base do wordmark */
+  top: calc(var(--wm-top) + var(--fs-wordmark) * var(--cap-ratio));
+  display: flex;
+  justify-content: center;
+  transform: scaleY(-1);
+  opacity: .62;
+  -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 95%);
+  mask-image: linear-gradient(to top, #000 0%, transparent 95%);
+  filter: blur(3px);
+  pointer-events: none;
+}
+
+@media (min-width: 48rem) {
+  .hero__reflection { filter: blur(1px) url(#ripple); }
+}
+
+/* ── 3b · rótulo do ato ─────────────────────────────────── */
+.hero__label {
+  position: absolute;
+  z-index: 5;
+  left: var(--gutter);
+  top: var(--label-y);
+}
+
+/* ── 14–15 · barra inferior (o player, camada 13, vive em .act-nav — ver nav.css) ── */
+.hero__bar {
+  position: absolute;
+  z-index: 10;
+  inset: auto var(--gutter) var(--gutter);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: var(--ctl-size);
+  /* retrato: o HUD fica acima da linha do player (que está em .act-nav) */
+  padding-bottom: calc(var(--ctl-size) + var(--sp-3));
+}
+
+@media (min-width: 48rem) and (min-aspect-ratio: 1/1) {
+  /* paisagem: HUD centrado na mesma linha do player, com folga para ele */
+  .hero__bar { padding: 0 calc(var(--ctl-size) * 3 + var(--sp-3) * 2); }
+}
+
+.hero__hud {
+  grid-area: hud;
+  justify-self: center;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: var(--fs-hud);
+  letter-spacing: var(--ls-hud);
+  line-height: var(--lh-hud);
+  color: var(--text-mid);
+  text-align: center;
+  text-wrap: balance; /* quebra limpa com texto grande ou tela estreita */
+}
+
+
+/* ── saída: funde a base do hero em --ink-900 para emendar com o ACT II ── */
+.hero__exit {
+  position: absolute;
+  inset: auto 0 0;
+  height: 22%;
+  z-index: 6;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, var(--ink-900));
+}
+
+/* 16 · grão: global, em base.css (.section::after), para não marcar emenda entre atos */
+
+/* ── 6–7 · wrapper da água (só para o parallax, D30/§5.0): mesma camada z 3 do piso e do reflexo ── */
+.hero__water {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* ═══ MOTION (DESIGN.md §5 Hero, §5.0) ═══════════════════════════════════════════════
+   Tudo sob html.js-motion: sem JS, com falha do motion ou em "reduced" a classe não existe e
+   o hero fica no estado estático aprovado. Entradas e loops são CSS puro (D29): não esperam o
+   GSAP, que só chega depois do load. Pausa (⏸, aba escondida, fora da tela via data-loop no
+   #ato-1) é global, em motion.css. Só transform/opacity; filter só no blur da entrada.
+   Todo loop passa pela pose estática na fase 0 (0 %), e as entradas terminam nela. */
+
+/* ── entrada: wordmark (e sua cópia no reflexo) ── */
+@keyframes hero-wordmark-in {
+  from {
+    transform: scale(1.06);
+    filter: blur(14px) drop-shadow(0 2px 0 var(--ink-800)) drop-shadow(0 0 40px color-mix(in srgb, var(--mist-200) 25%, transparent));
+  }
+  to {
+    transform: none;
+    filter: blur(0) drop-shadow(0 2px 0 var(--ink-800)) drop-shadow(0 0 40px color-mix(in srgb, var(--mist-200) 25%, transparent));
+  }
+}
+/* "low": sem blur (filter animado em texto desse tamanho é caro) */
+@keyframes hero-wordmark-in-low {
+  from { transform: scale(1.06); opacity: 0; }
+}
+
+/* sem fill "forwards": ao terminar, o filter e o transform voltam aos valores estáticos
+   (o blur some da cascata). Sem will-change: o navegador promove a camada só enquanto anima. */
+.js-motion .hero__wordmark-text { animation: hero-wordmark-in 1800ms var(--ease-out) backwards; }
+.js-motion[data-quality="low"] .hero__wordmark-text { animation-name: hero-wordmark-in-low; }
+
+/* ── entrada: rótulo do ato, HUD e player ── */
+@keyframes hero-rise-in { from { transform: translateY(12px); opacity: 0; } }
+@keyframes hero-fade-in { from { opacity: 0; } }
+
+.js-motion .hero__label { animation: hero-rise-in var(--t-mid) var(--ease-out) 2000ms backwards; }
+.js-motion .hero__hud,
+.js-motion .player { animation: hero-fade-in var(--t-mid) var(--ease-out) 1600ms backwards; }
+
+/* ── loops (fumaça, bolhas, nigiri): em css/hero-loops.css, pedido junto com o motion,
+   depois do load (medido: qualquer pedido antes do LCP o atrasava de 3,6 s para 3,8 s) ── */
+
+/* ── grade do piso e reflexo: ondulação por feTurbulence animado em js/motion/hero.js
+   (GSAP, só "full" + quality "high" + ≥ 768 px; D18/D27) ── */

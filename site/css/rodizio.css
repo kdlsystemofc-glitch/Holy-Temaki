@@ -1,0 +1,298 @@
+/* ACT II — THE FEAST OF ABUNDANCE (§4/02, camadas 1–10). Layout estático: sem animação.
+   O palco tem proporção fixa; tábuas, linhas-guia (SVG) e rótulos (HTML) usam o mesmo
+   sistema de coordenadas: 1440×662 em paisagem, 390×560 em retrato (celular e tablet em pé —
+   mesmo regime do hero). */
+
+.rodizio {
+  --waterline: 83%;       /* linha d'água dentro do palco (base da tábua direita) */
+  position: relative;
+  overflow: hidden; /* fallback Safari < 16 */
+  overflow: clip;
+  padding-block: var(--gutter) var(--sp-6);
+}
+
+@media (min-width: 48rem) and (min-aspect-ratio: 1/1) {
+  .rodizio {
+    height: var(--h-rodizio);
+    padding: 0;
+  }
+}
+
+/* ── 1 · fundo: preto no topo (emenda com o hero), clareia até a água, volta ao preto ── */
+.rodizio__bg {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(75% 24% at 50% 64%, color-mix(in srgb, var(--mist-200) 10%, transparent), transparent 70%),
+    linear-gradient(180deg,
+      var(--ink-900) 0%,
+      var(--ink-800) 55%,
+      var(--ink-700) 80%,
+      var(--ink-850) 93%,
+      var(--ink-900) 100%);
+}
+
+/* ── 4 · rótulo ─────────────────────────────────────────── */
+.rodizio__head {
+  position: relative;
+  z-index: 6;
+}
+
+@media (min-width: 48rem) and (min-aspect-ratio: 1/1) {
+  .rodizio__head { padding-top: var(--gutter); }
+}
+
+.act-label__title span { display: block; }
+
+/* ── palco ──────────────────────────────────────────────── */
+.rodizio__stage {
+  position: relative;
+  width: 100%;
+  max-width: 600px;      /* retrato em tela larga (tablet em pé, texto ampliado): não agigantar as tábuas */
+  margin-inline: auto;
+  aspect-ratio: 390 / 560;
+  margin-top: var(--sp-6);
+}
+
+@media (min-width: 48rem) and (min-aspect-ratio: 1/1) {
+  .rodizio__stage {
+    position: absolute;
+    left: 0;
+    /* centralizado sem transform: transform criaria um stacking context e o screen
+       dos plates deixaria de alcançar o fundo da seção */
+    top: 50%;
+    margin-top: calc(-100vw * 331 / 1440);
+    aspect-ratio: 1440 / 662;
+    max-width: none;
+    margin-inline: 0;
+  }
+}
+
+/* Grupo em screen: o palco é um stacking context (translate), então cada plate só
+   "enxergaria" fundo transparente. O grupo inteiro faz o screen sobre o fundo da seção,
+   e dentro dele cada plate faz screen sobre os outros. */
+.rodizio__screen {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  mix-blend-mode: var(--plate-blend);
+}
+
+/* ── 2 · vapor ──────────────────────────────────────────── */
+.rodizio__steam {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  /* nasce do nada no topo (sem corte na emenda) e some antes das tábuas */
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 12%, #000 36%, transparent 56%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 12%, #000 36%, transparent 56%);
+}
+
+.rodizio__steam-layer {
+  position: absolute;
+  max-width: none;
+  filter: grayscale(.9) blur(1.5px);
+}
+
+.rodizio__steam-layer--a { left: 40%; top: -12%; width: 27%; opacity: .38; }
+.rodizio__steam-layer--b { left: 53%; top: -6%;  width: 24%; opacity: .3; transform: scaleX(-1); }
+.rodizio__steam-layer--c { left: 25%; top: 16%;  width: 14%; opacity: .28; transform: scaleX(-1); }
+
+@media (max-width: 47.99rem), (max-aspect-ratio: 999/1000) {
+  .rodizio__steam-layer--a { left: 22%; top: -14%; width: 50%; }
+  .rodizio__steam-layer--b { left: 46%; top: -10%; width: 44%; }
+  .rodizio__steam-layer--c { display: none; }
+}
+
+/* ── 3 · faíscas ────────────────────────────────────────── */
+.rodizio__embers { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+
+.rodizio__embers i {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 3px;
+  aspect-ratio: 1;
+  border-radius: var(--r-full);
+  background: var(--salmon-500);
+  box-shadow: 0 0 6px 1px color-mix(in srgb, var(--salmon-500) 70%, transparent);
+  filter: blur(.5px);
+}
+
+@media (max-width: 47.99rem), (max-aspect-ratio: 999/1000) {
+  /* no retrato, as faíscas ficam sobre a tábua direita */
+  .rodizio__embers { inset: -4% 0 55%; }
+}
+
+/* ── 5–7 · tábuas ───────────────────────────────────────── */
+.rodizio__boards { position: absolute; inset: 0; }
+
+/* Com parallax (motion "full" + quality "high"; D27) o container das tábuas é transformado e vira
+   um stacking context: as tábuas passariam a mesclar só dentro dele e os retângulos pretos dos
+   plates apareceriam. Então ele também faz screen — o conjunto mescla sobre o vapor, e como o
+   screen é associativo o resultado é o mesmo. Só nesse caso: isolar o grupo muda a reamostragem
+   das imagens (medido: 1,7 % dos pixels no retrato). Os dois atributos existem antes da 1ª
+   pintura, então o grupo já está pronto quando o parallax começa. */
+.js-motion[data-quality="high"] .rodizio__boards { mix-blend-mode: var(--plate-blend); }
+
+.board {
+  position: absolute;
+  mix-blend-mode: var(--plate-blend);
+  left: var(--bx);
+  top: var(--by);
+  width: var(--bw);
+}
+
+.board img { width: 100%; }
+
+/* 7 · sombra de contato: fica fora do grupo em screen (senão some) */
+.rodizio__shadows { position: absolute; inset: 0; z-index: 1; }
+.rodizio__shadows .board { mix-blend-mode: normal; aspect-ratio: 1200 / 896; }
+.rodizio__shadows .board::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 18%;
+  right: 18%;
+  bottom: 12%;
+  height: 16%;
+  border-radius: var(--r-full);
+  background: radial-gradient(ellipse, var(--ink-900) 0%, transparent 70%);
+  filter: blur(12px);
+}
+
+.board--left  { --bx: -2%;  --by: 47.1%; --bw: 72%; }
+.board--right { --bx: 6%;   --by: 3%;  --bw: 90%; }
+
+@media (min-width: 48rem) and (min-aspect-ratio: 1/1) {
+  .board--left  { --bx: 15.8%; --by: 36.4%; --bw: 32.4%; rotate: 6deg; }
+  .board--right { --bx: 44%;   --by: 21.5%; --bw: 42%; }
+}
+
+/* ── 10 · espelho d'água: clone invertido na linha d'água, estático + blur ──
+   O wrapper só carrega o parallax; o reflexo já tem o próprio transform (scaleY(-1)) */
+.rodizio__reflection-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.rodizio__reflection {
+  position: absolute;
+  inset: 0;
+  transform: scaleY(-1);
+  transform-origin: 50% var(--waterline);
+  opacity: .45;
+  filter: blur(3px);
+  pointer-events: none;
+  /* máscara aplicada antes do flip: só a faixa logo acima da linha d'água vira reflexo */
+  -webkit-mask-image: linear-gradient(180deg, transparent 64%, #000 82%, #000 var(--waterline), transparent var(--waterline));
+  mask-image: linear-gradient(180deg, transparent 64%, #000 82%, #000 var(--waterline), transparent var(--waterline));
+}
+
+
+/* água: ondas finas abaixo da linha d'água */
+.rodizio__stage::before {
+  content: "";
+  position: absolute;
+  inset: calc(var(--waterline) - 12%) -2% 0;
+  z-index: 0;
+  background: repeating-linear-gradient(180deg,
+    color-mix(in srgb, var(--mist-200) 9%, transparent) 0 1px,
+    transparent 1px 6px);
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 30%, #000 70%, transparent);
+  mask-image: linear-gradient(180deg, transparent, #000 30%, #000 70%, transparent);
+}
+
+/* saída: a última faixa volta a --ink-900 puro, para emendar com o ACT III */
+.rodizio__exit {
+  position: absolute;
+  inset: auto 0 0;
+  height: 7%;
+  z-index: 7;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, var(--ink-900));
+}
+
+/* ── 8 · linhas-guia ────────────────────────────────────── */
+.callouts {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+  stroke: var(--line-hud);
+  stroke-width: 1;
+  pointer-events: none;
+}
+
+.callouts path { vector-effect: non-scaling-stroke; opacity: .7; }
+.callouts circle { fill: var(--line-hud); stroke: none; }
+
+.callouts--wide { display: none; }
+
+@media (min-width: 48rem) and (min-aspect-ratio: 1/1) {
+  .callouts--wide { display: block; }
+  .callouts--narrow { display: none; }
+}
+
+/* rótulos HTML por cima das linhas */
+.callout-labels { position: absolute; inset: 0; z-index: 6; pointer-events: none; }
+
+.callout-label {
+  position: absolute;
+  left: var(--lx);
+  top: var(--ly);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: var(--fs-label);
+  letter-spacing: var(--ls-label);
+  line-height: var(--lh-label);
+  color: var(--text-mid);
+  white-space: nowrap;
+}
+
+.callout-label--price   { --lx: 15.4%; --ly: 90.7%; }
+/* retrato: ancorado à direita, no fim da linha-guia (x 352 de 390) — com texto grande
+   cresce para a esquerda em vez de sair da tela */
+.callout-label--sashimi { --ly: 46.3%; left: auto; right: 9.74%; text-align: right; }
+
+@media (min-width: 48rem) and (min-aspect-ratio: 1/1) {
+  .callout-label--price   { --lx: 40.1%; --ly: 85.6%; }
+  .callout-label--sashimi { --lx: 79.9%; --ly: 68.5%; left: var(--lx); right: auto; text-align: left; }
+}
+
+/* ── 9 · micro-label do topo ────────────────────────────── */
+.stage-tag {
+  position: absolute;
+  z-index: 6;
+  left: var(--gutter);
+  top: calc(-1 * var(--sp-4));
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: var(--fs-hud);
+  letter-spacing: var(--ls-hud);
+  line-height: 1;
+  color: var(--text-mid);
+  flex-wrap: wrap;
+  row-gap: var(--sp-1);
+}
+
+.stage-tag__line {
+  width: clamp(3rem, 6.25vw, 6rem);
+  height: 1px;
+  background: var(--line-hud);
+  opacity: .7;
+}
+
+@media (min-width: 48rem) and (min-aspect-ratio: 1/1) {
+  .stage-tag { left: 18.2%; top: 24.9%; }
+}

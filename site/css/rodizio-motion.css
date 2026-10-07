@@ -1,0 +1,73 @@
+/* Motion do ACT II (DESIGN.md §5 Rodízio, §5.0). Pedido pelo carregador do <head> junto com o
+   motion, depois do load (D29, D31): nada disto vale no 1º quadro, e sem JS ou com falha a seção
+   fica no estado estático aprovado. Entradas e callouts são GSAP (js/motion/rodizio.js).
+
+   Um efeito de movimento por elemento (§5 Rodízio, "Estrutura"):
+     .rodizio__boards / .rodizio__shadows   parallax ×.12  (transform, core.js)
+     .board (tábua)                         entrada (transform, GSAP) + hover (scale)
+     .board img                             flutuação (translate)
+     .rodizio__steam                        parallax ×.06  (transform)
+     .rodizio__steam-layer                  loop do vapor (translate + opacity)
+     .rodizio__reflection-wrap              parallax ×.20  (transform)
+     .rodizio__reflection                   scaleY(-1) estático + ondulação (filter)
+   Todo loop passa pela pose estática na fase 0. Pausa global em motion.css (⏸, aba escondida,
+   fora da tela via data-loop no #ato-2). */
+
+/* ── flutuação: só depois da entrada (js/motion/rodizio.js põe .is-flutuando) ── */
+@keyframes rodizio-float {
+  0%   { translate: 0 0; }
+  50%  { translate: 0 -6px; }
+  100% { translate: 0 6px; }
+}
+.js-motion .rodizio.is-flutuando .rodizio__boards .board img { animation: rodizio-float 9s ease-in-out infinite alternate; }
+.js-motion .rodizio.is-flutuando .rodizio__boards .board--right img { animation-duration: 11s; animation-delay: -4s; }
+
+/* ── vapor: sobe e volta em 18 s, com a opacidade pulsando; 2 camadas, 1 em "low" ── */
+.rodizio__steam-layer--a { --o: .38; }
+.rodizio__steam-layer--b { --o: .3; }
+@keyframes rodizio-steam {
+  0%, 100% { translate: 0 0;    opacity: var(--o); }
+  50%      { translate: 0 -7%;  opacity: calc(var(--o) * .55); }
+}
+.js-motion .rodizio__steam-layer--a { animation: rodizio-steam 18s ease-in-out infinite; }
+.js-motion .rodizio__steam-layer--b { animation: rodizio-steam 18s ease-in-out -9s infinite; }
+.js-motion[data-quality="low"] .rodizio__steam-layer--b { animation: none; }
+
+/* ── faíscas: sobem 60 px e somem; renascem abaixo e voltam à pose estática.
+   12 animadas (a 13ª fica na pose), 5 em "low". Duração e fase fixas por elemento ── */
+@keyframes rodizio-ember {
+  0%     { translate: 0 0;     opacity: 1; }
+  55%    { translate: 0 -60px; opacity: 0; }
+  55.01% { translate: 0 16px;  opacity: 0; }
+  100%   { translate: 0 0;     opacity: 1; }
+}
+.js-motion .rodizio__embers i:nth-child(-n+12) { animation: rodizio-ember var(--ember, 4s) linear var(--ember-delay, 0s) infinite; }
+.rodizio__embers i:nth-child(1)  { --ember: 3.4s; --ember-delay: -0.7s; }
+.rodizio__embers i:nth-child(2)  { --ember: 4.6s; --ember-delay: -3.1s; }
+.rodizio__embers i:nth-child(3)  { --ember: 3.1s; --ember-delay: -1.9s; }
+.rodizio__embers i:nth-child(4)  { --ember: 4.9s; --ember-delay: -0.2s; }
+.rodizio__embers i:nth-child(5)  { --ember: 3.8s; --ember-delay: -2.6s; }
+.rodizio__embers i:nth-child(6)  { --ember: 4.2s; --ember-delay: -3.7s; }
+.rodizio__embers i:nth-child(7)  { --ember: 3.3s; --ember-delay: -1.2s; }
+.rodizio__embers i:nth-child(8)  { --ember: 5s;   --ember-delay: -4.4s; }
+.rodizio__embers i:nth-child(9)  { --ember: 3.6s; --ember-delay: -2.2s; }
+.rodizio__embers i:nth-child(10) { --ember: 4.4s; --ember-delay: -0.9s; }
+.rodizio__embers i:nth-child(11) { --ember: 3s;   --ember-delay: -2.8s; }
+.rodizio__embers i:nth-child(12) { --ember: 4.7s; --ember-delay: -1.5s; }
+.js-motion[data-quality="low"] .rodizio__embers i:nth-child(n+6) { animation: none; }
+
+/* ── ondulação do reflexo (só "full" + "high" + ≥ 768 px; js/motion/rodizio.js põe a classe).
+   #ripple-ato2 começa com deslocamento 0: na fase 0, igual ao estático ── */
+.rodizio--ondula .rodizio__reflection { filter: url(#ripple-ato2) blur(3px); }
+
+/* ── hover na tábua: só em aparelhos com hover. A tábua cresce 2 % (propriedade scale, separada
+   do transform da entrada) e as linhas-guia dela vão a --chrome-100 ── */
+@media (hover: hover) {
+  .js-motion .rodizio__boards .board { transition: scale var(--t-fast) var(--ease-soft); }
+  .js-motion .rodizio__boards .board:hover { scale: 1.02; }
+  .js-motion .callouts [data-callout] { transition: stroke var(--t-fast) var(--ease-soft), fill var(--t-fast) var(--ease-soft); }
+  .js-motion .rodizio__stage:has(.rodizio__boards .board--left:hover) path[data-callout="esquerda"],
+  .js-motion .rodizio__stage:has(.rodizio__boards .board--right:hover) path:is([data-callout="preco"], [data-callout="sashimi"], [data-callout="colchete"]) {
+    stroke: var(--chrome-100);
+  }
+}

@@ -1,0 +1,52 @@
+/* Loops do hero (ACT I) — DESIGN.md §5 Hero. Pedido pelo carregador do <head> junto com o
+   motion (depois do load; D29): os loops não são necessários no 1º quadro, e qualquer pedido
+   antes do LCP o atrasava (medido: 3,6 → 3,8 s). Começam depois da entrada de 1,8 s. Sem JS
+   ou com falha do motion, o hero fica estático, que é o comportamento pedido. Tudo sob html.js-motion; pausa global em motion.css (⏸, aba
+   escondida, fora da tela via data-loop no #ato-1). Todo loop passa pela pose estática na fase 0. */
+
+/* ── loop: fumaça — 3 camadas, velocidades diferentes; "low": só a central ──
+   translate/scale individuais: compõem com o transform próprio da camada da direita (espelho) */
+@keyframes hero-smoke-a { to { translate: 6% -1%; scale: 1.08; } }
+@keyframes hero-smoke-b { to { translate: -7% 1%; scale: 1.12; } }
+@keyframes hero-smoke-c { to { translate: 4% 0; scale: 1.05; } }
+
+.js-motion .hero__smoke-layer--l { animation: hero-smoke-a 56s linear infinite alternate; }
+.js-motion .hero__smoke-layer--r { animation: hero-smoke-b 70s linear infinite alternate; }
+.js-motion .hero__smoke-layer--c { animation: hero-smoke-c 40s linear infinite alternate; }
+.js-motion[data-quality="low"] .hero__smoke-layer--l,
+.js-motion[data-quality="low"] .hero__smoke-layer--r { animation: none; }
+
+/* ── loop: bolhas — sobem 180 px e somem; renascem abaixo e voltam à pose estática ── */
+@keyframes hero-bubble-rise {
+  0%     { translate: 0 0;      opacity: 1; }
+  62%    { translate: 0 -180px; opacity: 0; }
+  62.01% { translate: 0 40px;   opacity: 0; }
+  100%   { translate: 0 0;      opacity: 1; }
+}
+
+.js-motion .hero__bubbles i { animation: hero-bubble-rise var(--rise, 10s) linear var(--rise-delay, 0s) infinite; }
+/* 6–14 s, fases escalonadas (delay negativo: já começam no meio do ciclo, sem esperar) */
+.hero__bubbles i:nth-child(1)  { --rise: 9s;    --rise-delay: -1.1s; }
+.hero__bubbles i:nth-child(2)  { --rise: 12s;   --rise-delay: -7.4s; }
+.hero__bubbles i:nth-child(3)  { --rise: 7s;    --rise-delay: -3.2s; }
+.hero__bubbles i:nth-child(4)  { --rise: 13.5s; --rise-delay: -9.8s; }
+.hero__bubbles i:nth-child(5)  { --rise: 8s;    --rise-delay: -5.5s; }
+.hero__bubbles i:nth-child(6)  { --rise: 10.5s; --rise-delay: -2.3s; }
+.hero__bubbles i:nth-child(7)  { --rise: 6s;    --rise-delay: -4.6s; }
+.hero__bubbles i:nth-child(8)  { --rise: 11s;   --rise-delay: -8.1s; }
+.hero__bubbles i:nth-child(9)  { --rise: 14s;   --rise-delay: -0.4s; }
+.hero__bubbles i:nth-child(10) { --rise: 9.5s;  --rise-delay: -6.7s; }
+.hero__bubbles i:nth-child(11) { --rise: 7.5s;  --rise-delay: -1.9s; }
+.hero__bubbles i:nth-child(12) { --rise: 12.5s; --rise-delay: -10.2s; }
+.hero__bubbles i:nth-child(13) { --rise: 8.5s;  --rise-delay: -3.9s; }
+.hero__bubbles i:nth-child(14) { --rise: 11.5s; --rise-delay: -5.1s; }
+/* "low": 6 bolhas animadas; as outras 8 ficam na pose estática */
+.js-motion[data-quality="low"] .hero__bubbles i:nth-child(n+7) { animation: none; }
+
+/* ── loop: nigiri — flutua ±10 px e ±2° (o -14° de base é a propriedade rotate, compõe) ── */
+@keyframes hero-nigiri-float {
+  0%   { transform: none; }
+  50%  { transform: translateY(-10px) rotate(-2deg); }
+  100% { transform: translateY(10px) rotate(2deg); }
+}
+.js-motion .hero__nigiri { animation: hero-nigiri-float 7s ease-in-out infinite alternate; }

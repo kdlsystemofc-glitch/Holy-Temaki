@@ -1,0 +1,110 @@
+/* CODA — rodapé (§4/05, D10/D23). Continua o ACT IV em --ink-900; o grão vem de .section.
+   Só dados do CLIENTE.md: nome, endereço, horário, preço, telefone. */
+
+.site-footer {
+  min-height: var(--h-footer);
+  padding-block: var(--sp-6) var(--sp-7);
+  background: var(--ink-900);
+}
+
+.site-footer__grid {
+  row-gap: var(--sp-5);
+}
+
+/* régua (camada 2): hairline dentro do grid, não na emenda */
+.site-footer__grid::before {
+  content: "";
+  grid-column: 1 / -1;
+  height: 1px;
+  margin-bottom: calc(var(--sp-5) - var(--sp-3));
+  background: color-mix(in srgb, var(--chrome-100) 8%, transparent);
+}
+
+@media (min-width: 48rem) {
+  .site-footer__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+.site-footer__col {
+  display: grid;
+  align-content: start;
+  gap: var(--sp-2);
+}
+
+/* wordmark em texto (o logo real é só favicon, D23) */
+.site-footer__mark {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-1);
+  color: var(--chrome-100);
+}
+.site-footer__mark .logo__name { text-indent: 0; }
+
+.site-footer__label {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: var(--fs-label);
+  letter-spacing: var(--ls-label);
+  line-height: var(--lh-label);
+  color: var(--text-dim);
+}
+
+.site-footer__text {
+  font-family: var(--font-body);
+  font-style: normal;
+  font-size: var(--fs-hud);
+  letter-spacing: .06em;
+  line-height: 1.6;
+  color: var(--text-mid);
+}
+
+.site-footer__link {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: var(--touch); /* alvo de toque */
+  color: var(--text-base);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--text-base) 30%, transparent);
+  text-underline-offset: .3em;
+  transition: text-decoration-color var(--t-fast) var(--ease-soft);
+}
+
+.site-footer__link:hover { text-decoration-color: currentColor; }
+
+/* Com hover real (§5 Rodapé): um traço cresce da esquerda (scaleX) sob o texto, sobre o
+   sublinhado discreto que já existe. Foco por teclado: o contorno âmbar global continua, e o
+   traço também aparece. O span abraça o texto (o link tem 44 px de altura, alvo de toque) */
+.site-footer__sub { position: relative; display: inline-block; }
+@media (hover: hover) {
+  .site-footer__sub::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -.3em;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--t-fast) var(--ease-soft);
+  }
+  .site-footer__link:hover .site-footer__sub::after,
+  .site-footer__link:focus-visible .site-footer__sub::after { transform: none; }
+}
+
+/* "Ver no Google Maps" faz parte do link do endereço (área de clique inteira) */
+.site-footer__maps {
+  display: block;
+  margin-top: var(--sp-2);
+  text-decoration: none;
+}
+
+.site-footer__facts {
+  display: grid;
+  gap: var(--sp-3);
+  margin: 0;
+}
+
+.site-footer__facts div { display: grid; gap: var(--sp-1); }
+.site-footer__facts dd { margin: 0; }

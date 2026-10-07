@@ -1,0 +1,53 @@
+/* Motion — infraestrutura global (DESIGN.md §5, D26–D30). Nenhuma seção é animada aqui.
+   Regra de ouro: todo estado inicial escondido vive sob html.js-motion. Essa classe é posta
+   no <head> antes da pintura e tirada se o motion falhar ou o modo for "reduced" — sem ela,
+   todo o conteúdo aparece como no layout estático. */
+
+/* ── Entrada da página (D28): véu #040507 que se desfaz em 800 ms, só opacity.
+   CSS puro, não espera JS: o conteúdo (e o LCP) pinta por baixo desde o 1º quadro. ── */
+.motion-enter body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--ink-900);
+  pointer-events: none;
+  animation: motion-veil var(--t-enter) var(--ease-soft) both;
+}
+
+@keyframes motion-veil { to { opacity: 0; } }
+
+/* ── Revelação declarativa (data-reveal): estado inicial ── */
+.js-motion [data-reveal]:not([data-revealed]) { opacity: 0; }
+.js-motion [data-reveal="up"]:not([data-revealed]) { transform: translateY(var(--reveal-y)); }
+.js-motion [data-reveal="scale"]:not([data-revealed]) { transform: scale(var(--reveal-scale)); }
+
+/* ── Pausa: botão ⏸ (data-motion="paused") e aba escondida (data-page-hidden) ── */
+:root[data-motion="paused"] *,
+:root[data-motion="paused"] *::before,
+:root[data-motion="paused"] *::after,
+:root[data-page-hidden] *,
+:root[data-page-hidden] *::before,
+:root[data-page-hidden] *::after {
+  animation-play-state: paused !important;
+}
+
+/* o véu de entrada não é animação de conteúdo: pausado, ele ficaria preto na tela */
+:root[data-motion="paused"] body::before { animation-play-state: running !important; }
+
+/* ── Loops fora da tela (data-loop + IntersectionObserver em core.js) ── */
+[data-loop][data-offscreen],
+[data-loop][data-offscreen] *,
+[data-loop][data-offscreen] *::before,
+[data-loop][data-offscreen] *::after {
+  animation-play-state: paused !important;
+}
+
+/* ── Lenis (equivalente ao lenis.css, sem a regra de overflow do "stopped", que brigaria com
+   a trava de rolagem do menu em nav.css) ── */
+html.lenis,
+html.lenis body { height: auto; }
+/* o Lenis move o scroll a cada quadro; scroll-behavior: smooth (reset.css) faria cada passo
+   virar uma animação própria */
+html.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth iframe { pointer-events: none; }

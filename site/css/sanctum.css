@@ -1,0 +1,213 @@
+/* ACT III — THE SANCTUM (§4/03, camadas 1–8). Layout estático: o acender em cascata
+   do neon entra na etapa de motion. Posições em % da seção (mockup: 1440×591). */
+
+.sanctum {
+  /* ▼ Slot do salão: ÚNICO caminho de arquivo. PROVISÓRIO (D24) — imagem gerada por IA,
+       trocar pela foto real do salão antes da entrega. */
+  --room-img: url("../assets/plate-room-1600.webp");
+
+  position: relative;
+  height: var(--h-sanctum);
+  min-height: 30rem;
+  overflow: hidden; /* fallback Safari < 16 */
+  overflow: clip;
+}
+
+/* ── 1 · fundo ──────────────────────────────────────────── */
+.sanctum__bg {
+  position: absolute;
+  inset: 0;
+  background: var(--ink-900);
+}
+
+/* ── 2 · salão: imagem normal (sem fundo preto → sem screen), escurecida e dessaturada,
+        bordas dissolvidas em --ink-900 por máscara ───────────────────────────────
+   Um efeito por elemento (§5 Sanctum): .sanctum__room tem a máscara e só se desloca (parallax),
+   nunca escala — a máscara fica parada na tela e recorta a imagem ampliada; dentro dele,
+   -zoom (zoom de rolagem) › -in (entrada) › -img (imagem + filtro, estáticos). */
+.sanctum__room {
+  position: absolute;
+  inset: 0 12%;
+  -webkit-mask-image:
+    linear-gradient(90deg, transparent 0%, #000 30%, #000 70%, transparent 100%),
+    linear-gradient(180deg, transparent 0%, #000 22%, #000 70%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(90deg, transparent 0%, #000 30%, #000 70%, transparent 100%),
+    linear-gradient(180deg, transparent 0%, #000 22%, #000 70%, transparent 100%);
+  mask-composite: intersect;
+}
+
+.sanctum__room-zoom,
+.sanctum__room-in,
+.sanctum__room-img { position: absolute; inset: 0; }
+
+.sanctum__room-img {
+  background:
+    linear-gradient(color-mix(in srgb, var(--ink-900) 40%, transparent) 0 0),
+    var(--room-img) 50% 72% / cover no-repeat;
+  background-blend-mode: multiply, normal;
+  filter: brightness(.42) saturate(.6) sepia(.25);
+}
+
+@media (max-width: 47.99rem) {
+  .sanctum__room { inset: 8% -45% 0; }
+}
+
+/* ── 4 · luz rebatida: trapézios âmbar nas paredes, na altura das barras externas.
+   O wrapper (inset 0) só existe para acompanhar o parallax do salão ── */
+.sanctum__spills { position: absolute; inset: 0; pointer-events: none; }
+
+.sanctum__spill {
+  position: absolute;
+  top: 11%;
+  width: 7.2%;
+  height: 64%;
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--amber-400) 3%, transparent),
+    color-mix(in srgb, var(--amber-400) 24%, transparent));
+  clip-path: polygon(0 0, 100% 15.6%, 100% 88.6%, 0 100%);
+}
+
+.sanctum__spill--l { left: 20.6%; }
+.sanctum__spill--r { right: 20.6%; transform: scaleX(-1); }
+
+@media (max-width: 47.99rem) {
+  .sanctum__spill { display: none; }
+}
+
+/* ── 3 · neon: núcleo claro + halo largo, CSS puro ──────── */
+.neon { position: absolute; inset: 0; }
+/* slot = a área inteira do neon, uma por barra: é quem recebe a entrada (opacity), para a barra e
+   o halo ficarem livres para os loops. Sem z-index: não cria stacking context no estático */
+.neon__slot { position: absolute; inset: 0; pointer-events: none; }
+
+.neon__bar {
+  position: absolute;
+  left: var(--x);
+  top: var(--t);
+  bottom: calc(100% - var(--b));
+  width: 3px;
+  translate: -50% 0;
+  opacity: var(--i);
+  border-radius: var(--r-pill);
+  /* núcleo: fio claro dentro de âmbar */
+  background:
+    linear-gradient(90deg, transparent 30%, var(--amber-200) 50%, transparent 70%),
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--amber-400) 20%, transparent),
+      var(--amber-400) 5%,
+      var(--amber-400) 95%,
+      color-mix(in srgb, var(--amber-400) 20%, transparent));
+  box-shadow: 0 0 6px 1px var(--amber-400);
+}
+
+/* halo: um box-shadow num elemento de 2 px quase não espalha luz; o halo é uma
+   faixa larga desfocada, própria de cada barra */
+.neon__bar::before,
+.neon__bar::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  translate: -50% 0;
+  border-radius: var(--r-pill);
+  pointer-events: none;
+}
+
+.neon__bar::before {
+  inset-block: -1%;
+  width: clamp(18px, 2vw, 30px);
+  background: color-mix(in srgb, var(--amber-400) 55%, transparent);
+  filter: blur(10px);
+}
+
+.neon__bar::after {
+  inset-block: -4%;
+  width: clamp(60px, 8vw, 120px);
+  background: radial-gradient(50% 50% at 50% 50%, color-mix(in srgb, var(--amber-400) 30%, transparent), transparent);
+  filter: blur(22px);
+}
+
+@media (max-width: 47.99rem) {
+  /* 4 barras no retrato: as do vão da porta saem, as externas abrem */
+  .neon__slot:nth-child(3),
+  .neon__slot:nth-child(4) { display: none; }
+  /* --x vem inline (desktop); no retrato a posição é fixada aqui */
+  .neon__slot:nth-child(1) .neon__bar { left: 6%; }
+  .neon__slot:nth-child(2) .neon__bar { left: 13%; }
+  .neon__slot:nth-child(5) .neon__bar { left: 87%; }
+  .neon__slot:nth-child(6) .neon__bar { left: 94%; }
+}
+
+/* ── 5 · névoa de chão: o wrapper (inset 0) não é stacking context no estático, então a névoa
+   mescla direto no fundo. Com parallax (motion "full" + "high") ele é transformado e passa a
+   fazer screen também (D36): screen é associativo, o resultado é o mesmo ── */
+.sanctum__fog-wrap { position: absolute; inset: 0; pointer-events: none; }
+.js-motion[data-quality="high"] .sanctum__fog-wrap { mix-blend-mode: var(--plate-blend); }
+
+.sanctum__fog {
+  position: absolute;
+  left: -5%;
+  bottom: -26%;
+  width: 110%;
+  max-width: none;
+  opacity: .42;
+  filter: grayscale(.8);
+  -webkit-mask-image: linear-gradient(180deg, transparent 40%, #000 62%);
+  mask-image: linear-gradient(180deg, transparent 40%, #000 62%);
+}
+
+@media (max-width: 47.99rem) {
+  .sanctum__fog { left: -60%; width: 220%; bottom: -8%; }
+}
+
+/* ── 8 · entrada e saída em --ink-900: emenda com o ACT II (acima) e o ACT IV (abaixo) ── */
+.sanctum__exit {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg,
+    var(--ink-900) 0%,
+    transparent 11%,
+    transparent 78%,
+    var(--ink-900) 100%);
+}
+
+/* ── 6 · rótulo ─────────────────────────────────────────── */
+.sanctum__head {
+  position: relative;
+  padding-top: var(--gutter);
+}
+
+/* ── 7 · título de lugar ────────────────────────────────── */
+.sanctum__place {
+  position: absolute;
+  inset-inline: var(--gutter);
+  top: 50%;
+  translate: 0 -50%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: .22em;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-variation-settings: "wdth" var(--wdth-display);
+  font-size: var(--fs-display);
+  letter-spacing: var(--ls-display);
+  line-height: var(--lh-display);
+  text-align: center;
+  color: var(--place-warm);
+  /* halo escuro: garante AA onde o texto cruza o núcleo do neon */
+  /* fallback sem color-mix: o halo não pode sumir (é ele que garante o AA sobre o neon) */
+  text-shadow: 0 0 2px var(--ink-900), 0 0 4px var(--ink-900), 0 0 10px var(--ink-900), 0 0 24px var(--ink-900);
+  text-shadow:
+    0 0 2px var(--ink-900),
+    0 0 4px var(--ink-900),
+    0 0 10px var(--ink-900),
+    0 0 24px color-mix(in srgb, var(--ink-900) 80%, transparent);
+}
+
+@media (max-width: 47.99rem) {
+  /* duas linhas limpas: "SÃO BERNARDO DO CAMPO" / "// CENTRO" */
+  .sanctum__place { flex-direction: column; align-items: center; row-gap: .15em; }
+}

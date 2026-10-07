@@ -1,0 +1,65 @@
+/* Motion do ACT III (DESIGN.md §5 Sanctum, §5.0). Pedido pelo carregador do <head> junto com o
+   motion, depois do load (D29, D31): nada disto vale no 1º quadro, e sem JS ou com falha a seção
+   fica no estado estático aprovado (neon aceso, título visível). Entradas, zoom de rolagem e o
+   título são GSAP (js/motion/sanctum.js).
+
+   Um efeito de movimento por elemento (§5 Sanctum, "Estrutura"):
+     .sanctum__room          parallax ×.08 (transform) + a máscara — nunca escala
+     .sanctum__room-zoom     zoom de rolagem 1 → 1,03 (transform, GSAP)
+     .sanctum__room-in       entrada 1,08 → 1 (transform, GSAP)
+     .sanctum__spills        parallax ×.08 (acompanha o salão)
+     .sanctum__spill         fade da entrada (opacity)
+     .neon                   parallax ×.14
+     .neon__slot             cascata da entrada (opacity)
+     .neon__bar              micro-flicker (opacity)
+     .neon__bar::after       pulso do halo (opacity)
+     .sanctum__fog-wrap      parallax ×.22 (+ screen quando existe; D36)
+     .sanctum__fog           deriva horizontal (translate)
+   Loops só depois da entrada (.is-aceso), com a seção na tela (data-loop) e fora do ⏸. */
+
+/* ── pulso do halo: 5 s, 16 % abaixo do repouso e de volta (a opacidade não passa de 1, então
+   o "±8 %" vira uma oscilação de 16 % com o repouso no topo), fases diferentes por barra ── */
+@keyframes neon-pulso {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: .84; }
+}
+.js-motion .sanctum.is-aceso .neon__bar::after { animation: neon-pulso 5s ease-in-out var(--pulso, 0s) infinite; }
+.neon__slot:nth-child(1) { --pulso: -0.4s; }
+.neon__slot:nth-child(2) { --pulso: -2.9s; }
+.neon__slot:nth-child(3) { --pulso: -1.6s; }
+.neon__slot:nth-child(4) { --pulso: -4.1s; }
+.neon__slot:nth-child(5) { --pulso: -3.3s; }
+.neon__slot:nth-child(6) { --pulso: -0.9s; }
+/* "low": pulso só nas duas barras externas (visíveis também no retrato) */
+.js-motion[data-quality="low"] .sanctum.is-aceso .neon__slot:nth-child(n+2):nth-child(-n+5) .neon__bar::after { animation: none; }
+
+/* ── micro-flicker: a 5ª barra falha a cada 12 s, sempre com a mesma sequência (determinística,
+   sem Math.random): cai a 35 %, volta, cai a 55 %, volta — em ~300 ms. Sem micro-flicker em "low" ── */
+@keyframes neon-micro {
+  0%, 93%  { opacity: var(--i); }
+  93.6%    { opacity: calc(var(--i) * .35); }
+  94.2%    { opacity: var(--i); }
+  94.9%    { opacity: calc(var(--i) * .55); }
+  95.6%, 100% { opacity: var(--i); }
+}
+.js-motion .sanctum.is-aceso .neon__slot:nth-child(5) .neon__bar { animation: neon-micro 12s linear infinite; }
+.js-motion[data-quality="low"] .sanctum.is-aceso .neon__slot:nth-child(5) .neon__bar { animation: none; }
+
+/* ── névoa de chão: deriva horizontal de 50 s (translate, na própria imagem em screen — o
+   transform do parallax fica no wrapper). Estática em "low" ── */
+@keyframes neblina-deriva { to { translate: 4% 0; } }
+.js-motion .sanctum__fog { animation: neblina-deriva 50s ease-in-out infinite alternate; }
+.js-motion[data-quality="low"] .sanctum__fog { animation: none; }
+/* pausa enquanto a página rola (D32): deslocar a névoa — imagem em screen, com máscara e filtro —
+   durante a rolagem custava ~20 quadros descartados em 10 s (medido); a 50 s por ciclo, a pausa
+   é imperceptível */
+.sanctum__fog.is-parada { animation-play-state: paused; }
+
+/* ── título: cópia de letras só durante a entrada (js/motion/sanctum.js). Cada letra fica
+   exatamente onde o texto original a desenha (medido com Range, com kerning); ao terminar a
+   cópia sai e o texto original, que nunca foi desmontado, volta ── */
+.sanctum__place-fx { position: absolute; inset: 0; pointer-events: none; }
+.sanctum__place-fx > span { position: absolute; left: 0; top: 0; white-space: pre; }
+/* durante a entrada o original fica transparente (sem sumir do layout nem do leitor de tela);
+   a cópia herda a cor e o halo escuro do título */
+.sanctum__place.is-letras > :not(.sanctum__place-fx) { color: transparent; text-shadow: none; }

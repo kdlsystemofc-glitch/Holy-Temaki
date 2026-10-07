@@ -1,0 +1,52 @@
+/* Motion do ACT IV (DESIGN.md §5 Reserva, §5.0). Pedido pelo carregador do <head> junto com o
+   motion, depois do load (D29, D31): nada disto vale no 1º quadro, e sem JS ou com falha a seção
+   fica no estado estático aprovado, com o formulário funcionando. Entradas, contador, água e
+   confirmação são GSAP (js/motion/reserva.js). Foco suave e varredura do botão são interface e
+   ficam em css/reserve.css.
+
+   Um efeito de movimento por elemento (§5 Reserva, "Estrutura"):
+     .reserve__water             parallax ×.10 (transform) — a ondulação é o filtro #water
+     .reserve__mist-wrap         parallax ×.06 (+ screen quando existe; D36)
+     .reserve__mist              deriva horizontal (translate)
+     .reserve__slot              entrada do card (transform)
+     .reserve__reflection        entrada do reflexo (opacity)
+     .num-contador               contador (camada visual sobre o campo; transform das faixas)
+     .reserve__onda              confirmação (transform + opacity) */
+
+/* ── bruma: deriva lenta, pausa durante a rolagem (classe no próprio elemento, D39); low: estática ── */
+@keyframes bruma-deriva { to { translate: -4% 0; } }
+.js-motion .reserve__mist { animation: bruma-deriva 60s ease-in-out infinite alternate; }
+.js-motion[data-quality="low"] .reserve__mist { animation: none; }
+.reserve__mist.is-parada { animation-play-state: paused; }
+
+/* ── contador: camada visual por cima do campo, só durante os 500 ms. Nunca mexe no value, no
+   que o leitor de tela lê nem no que o reflexo espelha ── */
+.num-contador {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  font-family: var(--font-body);
+  font-size: var(--fs-value);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-hi);
+}
+.num-contador__janela { display: inline-block; height: 1em; overflow: hidden; }
+.num-contador__faixa { display: block; }
+.num-contador__faixa > span { display: block; height: 1em; }
+/* enquanto a camada roda, o texto do próprio input fica transparente (não sai do DOM) */
+.num.is-contando { color: transparent; }
+
+/* ── confirmação: ondulação circular sobre a água, a partir do botão ── */
+.reserve__onda {
+  position: absolute;
+  width: 40px;
+  aspect-ratio: 1;
+  margin: -20px 0 0 -20px;
+  border: 1px solid color-mix(in srgb, var(--mist-200) 70%, transparent);
+  border-radius: var(--r-full);
+  pointer-events: none;
+}

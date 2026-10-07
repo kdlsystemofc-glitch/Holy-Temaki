@@ -1,0 +1,15 @@
+{
+  "name": "Holy Temaki Santo André",
+  "short_name": "Holy Temaki",
+  "description": "Restaurante japonês em Vila Assunção, Santo André – SP: temaki, hot roll e combinados.",
+  "lang": "pt-BR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "browser",
+  "background_color": "#040507",
+  "theme_color": "#040507",
+  "icons": [
+    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/icons/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

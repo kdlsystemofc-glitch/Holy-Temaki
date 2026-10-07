@@ -1,0 +1,181 @@
+/* Tokens — fonte única: DESIGN.md (§1 paleta, §2 tipografia, §3 espaço/grid/raio, §5 motion).
+   Nenhum valor de cor, fonte ou espaçamento fora deste arquivo. */
+
+:root {
+  /* ── §1 Base — preto molhado ─────────────────────────── */
+  --ink-900: #040507;
+  --ink-850: #08090C;
+  --ink-800: #0C0E11;
+  --ink-700: #16191E;
+  --ink-600: #1D2025;
+  --ink-500: #2D221E;
+
+  /* ── §1 Cromo, fumaça e texto ─────────────────────────── */
+  --chrome-100: #FFFEFF;
+  --mist-100: #EAF1F9;
+  --mist-200: #C9D0DA;
+  --steel-300: #656B77;
+  --steel-400: #454E57;
+  --chrome-900: #2D3138; /* base do degradê cromado do wordmark (§4/01 camada 5) */
+  --text-hi: #F5F6F9;
+  --text-base: #D8D9DB;
+  --text-mid: #9E9F9F;   /* piso de contraste para qualquer texto (D19) */
+  --text-dim: #84868A;
+  --text-faint: #62666A; /* só traços, ticks e bordas — nunca texto (D19) */
+  --line-hud: #91969F;
+
+  /* ── §1 Acentos — salmão = comida/ação, âmbar = ambiente/luz ── */
+  --salmon-200: #FACAB3;
+  --salmon-500: #EA794F;
+  --salmon-600: #D67952;
+  --amber-200: #FFE5D0;
+  --amber-400: #FDD4A0;
+  --amber-700: #5E391F;
+  --wood-800: #331D08;
+  --place-warm: #E9D5C6; /* SÃO BERNARDO DO CAMPO // CENTRO (§4/03 camada 7) */
+
+  /* ── §2 Famílias ──────────────────────────────────────── */
+  /* Fallbacks com métricas ajustadas (base.css): se a fonte falhar ou demorar, o texto
+     ocupa quase o mesmo espaço e a troca não empurra o layout. */
+  --font-display: "Archivo", "Archivo Fallback", "Archivo Fallback Helvetica", system-ui, sans-serif;
+  --font-body: "Space Grotesk", "Space Grotesk Fallback", "Space Grotesk Fallback Helvetica", system-ui, sans-serif;
+
+  /* ── §2 Escala tipográfica (topos ✔︎ reduzidos por D15) ── */
+  /* retrato; paisagem no media query. min(…, 25vw): com texto a 200 % o piso de 4rem
+     estouraria a largura, então a largura manda */
+  --fs-wordmark: min(clamp(4rem, 24.4vw, 22rem), 25vw);
+  --fw-wordmark: 500;
+  --wdth-wordmark: 100;
+  --cap-ratio: .7;                          /* altura de maiúscula da Archivo ÷ font-size */
+  --fs-display: clamp(1.25rem, 2.7vw, 2.5rem);
+  --fs-title: clamp(1.125rem, 1.78vw, 1.6rem);
+  --fs-eyebrow: clamp(.75rem, 1.45vw, 1.25rem);
+  --fs-logo: clamp(1.375rem, 2.2vw, 1.75rem);
+  --fs-logo-sub: clamp(.5rem, .8vw, .7rem);
+  --fs-hud: clamp(.625rem, 1.17vw, .875rem);
+  --fs-label: clamp(.5625rem, 1vw, .75rem);
+  --fs-value: clamp(1.25rem, 2.6vw, 2rem);
+
+  --ls-wordmark: .045em;
+  --ls-display: 0;
+  --wdth-display: 92;  /* medido: título de lugar mais estreito que a Archivo normal */
+  --ls-title: .01em;
+  --ls-eyebrow: .08em;
+  --ls-logo: .03em;
+  --ls-logo-sub: .48em;
+  --ls-hud: .14em;
+  --ls-label: .16em;
+  --ls-value: 0;
+
+  --lh-wordmark: .82;
+  --lh-display: 1.1;
+  --lh-title: 1.2;
+  --lh-eyebrow: 1.2;
+  --lh-hud: 1.3;
+  --lh-label: 1.3;
+  --lh-value: 1;
+
+  /* ── §3 Espaçamento — base 8 no layout-mãe de 1440 ────── */
+  --sp-1: clamp(.375rem, .56vw, .5rem);
+  --sp-2: clamp(.625rem, 1.11vw, 1rem);
+  --sp-3: clamp(1rem, 1.67vw, 1.5rem);
+  --sp-4: clamp(1.25rem, 2.22vw, 2rem);
+  --sp-5: clamp(1.25rem, 2.86vw, 2.5rem);
+  --sp-6: clamp(2rem, 4.44vw, 4rem);
+  --sp-7: clamp(2.75rem, 6.67vw, 6rem);
+  --sp-8: clamp(3.5rem, 8.89vw, 8rem);
+  --gutter: var(--sp-5);
+
+  /* ── §3 Grid ──────────────────────────────────────────── */
+  --grid-cols: 1;          /* mobile: 1 coluna */
+  --grid-gap: var(--sp-3);
+
+  /* ── §3 Alturas de seção ──────────────────────────────── */
+  /* retrato: tela cheia, com piso físico (em px: o conteúdo do hero não dobra com o texto,
+     o wordmark é limitado pela largura — um piso em rem dobraria à toa com texto a 200 %) */
+  --h-hero: max(100svh, 540px);
+  --h-rodizio: max(80svh, 46vw);
+  --h-sanctum: max(72svh, 41vw);
+  --h-reserva-min: 60svh;
+  --h-footer: clamp(14rem, 22vw, 20rem);
+
+  /* ── §3 Raio e bordas (sem box-shadow padrão) ─────────── */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 12px;
+  --r-pill: 9999px;
+  --r-full: 50%;
+  --field-h: clamp(2.75rem, 4.6vw, 4.125rem); /* campos e botão do formulário: 66 px@1440, mín. 44 px (toque) */
+  --touch: 44px;                           /* alvo de toque mínimo: medida física, não cresce com o texto */
+  --ctl-size: clamp(var(--touch), 3.1vw, 48px); /* botões circulares e pílulas (45px@1440) */
+  --border-hud: 1px solid rgb(255 255 255 / .18);
+  --border-strong: 1px solid rgb(234 238 242 / .85);
+  --border-rule: 1px solid rgb(255 255 255 / .08);
+
+  /* ── §5 Motion ────────────────────────────────────────── */
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+  --ease-soft: cubic-bezier(.4, 0, .2, 1);
+  --t-fast: 220ms;
+  --t-mid: 600ms;
+  --t-slow: 1200ms;
+  --t-cine: 2400ms;
+  --t-enter: 800ms;       /* entrada da página: véu #040507 → conteúdo (D28) */
+  --t-fade: 200ms;        /* único movimento no modo "reduced": fade curto */
+  --reveal-y: 1.5rem;     /* data-reveal="up": deslocamento inicial */
+  --reveal-scale: .96;    /* data-reveal="scale": escala inicial */
+  --reveal-at: .35;       /* data-reveal: fração visível que dispara a entrada */
+
+  /* ── Plates (uso definido pelo cliente; ver assets.md) ── */
+  --plate-blend: screen;
+  --smoke-hero-opacity: .42; /* faixa .35–.5 */
+}
+
+@media (min-width: 48rem) {
+  :root { --grid-cols: 12; }
+}
+
+/* Composição em PAISAGEM (a do mockup): ≥ 768 px E mais largo que alto.
+   Retrato (celular, tablet em pé) usa a composição vertical, mesmo com 768 px ou mais.
+   Altura: o quadro 16:9 do mockup (56,9vw) limitado à tela — mas nunca menos que
+   min(56,9vw, 480px), para o hero não achatar em telas largas e baixas (celular deitado). */
+@media (min-width: 48rem) and (min-aspect-ratio: 1/1) {
+  :root {
+    --h-hero: max(min(100svh, 56.9vw), min(56.9vw, 480px));
+    --fs-wordmark: min(clamp(4rem, 17.9vw, 22rem), 19vw);
+  }
+}
+
+/* Paisagem COM altura (nav fixo, ver nav.css): cada ato ocupa ao menos a tela inteira.
+   Com o player fixo no canto inferior esquerdo, um ato mais baixo que a tela deixaria o
+   rótulo do ato seguinte (canto superior esquerdo) aparecer embaixo do player. Pelo mesmo
+   motivo o hero passa a 100svh: a linha do player fica sempre na base do hero. */
+@media (min-width: 48rem) and (min-aspect-ratio: 1/1) and (min-height: 32rem) {
+  :root {
+    --h-hero: 100svh;
+    --h-rodizio: max(100svh, 46vw);
+    --h-sanctum: max(100svh, 41vw);
+    --h-reserva-min: 100svh;
+  }
+}
+
+/* Safari < 15.4 e afins não conhecem svh: sem isso a declaração inteira é descartada
+   e o hero perde a altura. */
+@supports not (height: 1svh) {
+  :root {
+    --h-hero: max(100vh, 540px);
+    --h-rodizio: max(80vh, 46vw);
+    --h-sanctum: max(72vh, 41vw);
+    --h-reserva-min: 60vh;
+  }
+  @media (min-width: 48rem) and (min-aspect-ratio: 1/1) {
+    :root { --h-hero: max(min(100vh, 56.9vw), min(56.9vw, 480px)); }
+  }
+  @media (min-width: 48rem) and (min-aspect-ratio: 1/1) and (min-height: 32rem) {
+    :root {
+      --h-hero: 100vh;
+      --h-rodizio: max(100vh, 46vw);
+      --h-sanctum: max(100vh, 41vw);
+      --h-reserva-min: 100vh;
+    }
+  }
+}

@@ -1,0 +1,175 @@
+/* Base: tipografia global, grid, utilitários. Valores só via tokens.css. */
+
+/* ── Fallbacks de fonte com métricas da Archivo / Space Grotesk ─────────────
+   Medidos no Chromium (texto de 100 caracteres do site, a 100px):
+   Archivo  → ascent .88 · descent .21 · 7% mais larga que Segoe UI, igual à Helvetica
+   Space G. → ascent .98 · descent .29 · igual à Segoe UI, 8% mais larga que Helvetica
+   ascent/descent-override são relativos ao tamanho já ajustado (÷ size-adjust).
+   Nenhuma fonte proibida pelo CLAUDE.md é nomeada: Segoe UI (Windows), Helvetica (Apple),
+   Liberation/DejaVu (Linux). No Android cai em system-ui. */
+@font-face {
+  font-family: "Archivo Fallback";
+  src: local("Segoe UI");
+  size-adjust: 107%;
+  ascent-override: 82.2%;
+  descent-override: 19.6%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Archivo Fallback Helvetica";
+  src: local("Helvetica Neue"), local("Helvetica"), local("Liberation Sans"), local("DejaVu Sans");
+  size-adjust: 99.4%;
+  ascent-override: 88.5%;
+  descent-override: 21.1%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Space Grotesk Fallback";
+  src: local("Segoe UI");
+  size-adjust: 99.6%;
+  ascent-override: 98.4%;
+  descent-override: 29.1%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Space Grotesk Fallback Helvetica";
+  src: local("Helvetica Neue"), local("Helvetica"), local("Liberation Sans"), local("DejaVu Sans");
+  size-adjust: 92.5%;
+  ascent-override: 105.9%;
+  descent-override: 31.4%;
+  line-gap-override: 0%;
+}
+
+html {
+  background: var(--ink-900);
+  color-scheme: dark;
+}
+
+body {
+  background: var(--ink-900);
+  color: var(--text-base);
+  font-family: var(--font-body);
+  font-size: var(--fs-hud);
+  line-height: var(--lh-hud);
+  letter-spacing: var(--ls-hud);
+  text-transform: uppercase; /* todo texto da peça é caixa-alta (§2); HTML em caixa normal */
+  overflow-x: hidden;        /* fallback: Safari < 16 não conhece clip */
+  overflow-x: clip;
+}
+
+::selection { background: var(--salmon-500); color: var(--ink-900); }
+
+/* iOS: sem o flash cinza no toque — o foco visível é o contorno âmbar abaixo */
+a, button, input, select, label { -webkit-tap-highlight-color: transparent; }
+
+:focus-visible {
+  outline: 2px solid var(--amber-400);
+  outline-offset: 3px;
+}
+
+/* ── Grid de 12 colunas (§3) ───────────────────────────── */
+.section {
+  position: relative;
+  width: 100%;
+  isolation: isolate;
+}
+
+/* atos são full-bleed: a âncora encosta no topo (anula o scroll-margin do :target do reset) */
+.section { scroll-margin-block: 0; }
+
+/* §4/01 camada 16 · grão: o mesmo em todos os atos, para a emenda não aparecer */
+.section::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  opacity: .04;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  gap: var(--grid-gap);
+  padding-inline: var(--gutter);
+}
+
+/* Bloco de rótulo: colunas 1–4 */
+.col-label { grid-column: 1 / -1; }
+/* Card de reserva: 8 colunas centralizadas (3–10). "4–11" deixaria o card fora do centro;
+   o mockup e o DESIGN.md pedem centralizado. */
+.col-card { grid-column: 1 / -1; }
+
+@media (min-width: 48rem) {
+  .col-label { grid-column: 1 / span 4; }
+  .col-card { grid-column: 3 / span 8; }
+}
+
+/* ── Papéis tipográficos (§2) ──────────────────────────── */
+/* Os utilitários .t-wordmark/.t-display/.t-title/.t-eyebrow/.t-hud/.t-value e .col-1-5/6-8/9-12
+   saíram na etapa de otimização (D49): nenhum elemento os usava — cada seção aplica os tokens
+   direto. O papel "wordmark" do §2 (700, wdth 125) nunca chegou à tela: o hero usa 500/100. */
+.t-label {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: var(--fs-label);
+  letter-spacing: var(--ls-label);
+  line-height: var(--lh-label);
+  color: var(--text-dim);
+}
+
+/* ── Rótulo de ato (ACT I–IV) ──────────────────────────── */
+.act-label {
+  display: grid;
+  gap: var(--sp-1);
+  color: var(--text-base);
+}
+/* No mockup, ACT II e o título têm o mesmo corpo e desenho (cap 9,5 px@768). */
+.act-label__eyebrow,
+.act-label__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-variation-settings: "wdth" 100;
+  font-size: var(--fs-title);
+  letter-spacing: var(--ls-title);
+  line-height: var(--lh-title);
+}
+.act-label { gap: 0; }
+
+.svg-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+/* ── Plate de fundo preto: sempre screen, nunca recorte ── */
+.plate {
+  mix-blend-mode: var(--plate-blend);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ── Utilitários ───────────────────────────────────────── */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  inset-block-start: var(--sp-2);
+  inset-inline-start: var(--gutter);
+  z-index: 100;
+  padding: var(--sp-1) var(--sp-2);
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch);
+  background: var(--chrome-100);
+  color: var(--ink-900);
+  border-radius: var(--r-sm);
+  transform: translateY(-200%);
+}
+.skip-link:focus-visible { transform: none; }

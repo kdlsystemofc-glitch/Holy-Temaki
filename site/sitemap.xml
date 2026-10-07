@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- PLACEHOLDER (domínio a definir): https://dominio-a-definir.invalid/ não é um endereço real (TLD reservado .invalid).
+     Preencha "dominio" em seo.config.json e rode npm run build. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://dominio-a-definir.invalid/</loc>
+  </url>
+</urlset>

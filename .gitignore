@@ -1,0 +1,18 @@
+node_modules/
+screenshots/
+__pycache__/
+
+# segredos e ambiente
+.env
+.env*
+
+# logs e lixo de sistema
+*.log
+.DS_Store
+Thumbs.db
+
+# relatórios gerados do Lighthouse
+*.report.html
+*.report.json
+lighthouse/
+.lighthouseci/

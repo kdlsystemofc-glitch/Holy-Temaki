@@ -1,0 +1,62 @@
+/* Reset moderno e enxuto. */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+* { margin: 0; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  hanging-punctuation: first last;
+}
+
+body {
+  min-height: 100svh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+img { height: auto; }
+
+input, button, textarea, select {
+  font: inherit;
+  color: inherit;
+}
+
+button { cursor: pointer; background: none; border: 0; padding: 0; }
+
+a { color: inherit; text-decoration: none; }
+
+ul[role="list"], ol[role="list"] { list-style: none; padding: 0; }
+
+p, h1, h2, h3, h4, h5, h6 { overflow-wrap: break-word; }
+h1, h2, h3, h4, h5, h6 { font-weight: inherit; font-size: inherit; text-wrap: balance; }
+p { text-wrap: pretty; }
+
+:target { scroll-margin-block: var(--sp-6); }
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    /* só fades (§5.0 "reduced"): antes toda propriedade de todo elemento transicionava em 200 ms,
+       e o ponto do progresso animava top e o trilho, transform */
+    transition-property: opacity, visibility !important;
+    transition-duration: 200ms !important;
+    scroll-behavior: auto !important;
+  }
+}
