@@ -1,6 +1,6 @@
-# Asami Sushi — São Bernardo do Campo
+# Holy Temaki — Santo André
 
-Landing page do **Asami Sushi São Bernardo** (rodízio, Centro de SBC), construída a partir de um
+Landing page do **Holy Temaki Santo André**, construída a partir de um
 mockup em quatro "atos" + rodapé. HTML/CSS/JS estático, sem framework: o que está em `site/` é o
 que vai para o ar. O único build é o do CSS (`npm run build`, D46), e o resultado dele fica
 commitado em `site/` — a hospedagem não roda nada. Ver `DEPLOY.md`.

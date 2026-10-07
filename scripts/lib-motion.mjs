@@ -25,7 +25,7 @@ export async function servir(raiz) {
 
 // site/ de um commit, extraído numa pasta temporária (com LF, como no git e em produção)
 export async function extrairCommit(commit) {
-  const dir = join(tmpdir(), `asami-ref-${commit}`);
+  const dir = join(tmpdir(), `holy-ref-${commit}`);
   await rm(dir, { recursive: true, force: true });
   await mkdir(dir, { recursive: true });
   for (const arq of execSync(`git ls-tree -r --name-only ${commit} site`, { encoding: "utf8" }).split("\n").filter(Boolean)) {
@@ -109,7 +109,7 @@ export const medir = (page, ms) => page.evaluate(async (dur) => {
 
 // Quadros do compositor (PipelineReporter) durante fn(): apresentados × descartados
 export async function comTrace(navegador, page, fn) {
-  const arq = join(tmpdir(), `asami-trace-${Date.now()}.json`);
+  const arq = join(tmpdir(), `holy-trace-${Date.now()}.json`);
   await navegador.startTracing(page, { path: arq, categories: ["cc", "benchmark", "disabled-by-default-devtools.timeline.frame"] });
   const r = await fn();
   await navegador.stopTracing();

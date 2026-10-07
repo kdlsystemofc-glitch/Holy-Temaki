@@ -1,4 +1,4 @@
-# Publicação do site — Asami Sushi São Bernardo
+# Publicação do site — Holy Temaki Santo André
 
 O site é estático: publique a pasta **`site/`** como está. Antes de cada commit, confirme que ela
 está em modo de produção: `npm run build` gera o que o `index.html` carrega, e `npm run audit`

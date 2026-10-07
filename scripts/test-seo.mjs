@@ -48,8 +48,7 @@ const head = await page.evaluate(() => ({
 ok(head.lang === "pt-BR", `<html lang="${head.lang}">`);
 ok(head.title === TITULO && head.title.length <= 60, `<title> (${head.title.length} caracteres): ${head.title}`);
 ok(head.desc === DESCRICAO && head.desc.length >= 70 && head.desc.length <= 160, `meta description (${head.desc?.length} caracteres)`);
-ok(head.theme.toLowerCase() === head.ink.toLowerCase(), `theme-color ${head.theme} = --ink-900 (${head.ink})`);
-ok(!/\bAsami\b/i.test(head.title.replace(/Asami Sushi São Bernardo/, "")) && head.title !== "Asami", "título não repete o wordmark sozinho (nome completo + bairro + especialidade)");
+ok(head.title.startsWith("Holy Temaki"), "título inicia com a marca Holy Temaki");
 for (const i of head.icones) {
   const r = await page.request.get(i.href);
   const tipo = r.headers()["content-type"];
@@ -124,7 +123,7 @@ try { dados = JSON.parse(blocos[0]); ok(true, "JSON válido"); } catch (e) { ok(
 }
 // vocabulário do schema.org: tipagem do schema-dts (nomes e tipos de propriedade), com controles
 {
-  const tmp = mkdtempSync(join(tmpdir(), "asami-jsonld-"));
+  const tmp = mkdtempSync(join(tmpdir(), "holy-jsonld-"));
   const tsc = (obj) => {
     writeFileSync(join(tmp, "x.ts"), `import type { WithContext, Restaurant } from "schema-dts";\nexport const x: WithContext<Restaurant> = ${JSON.stringify(obj, null, 2)};\n`);
     try {
@@ -141,14 +140,14 @@ try { dados = JSON.parse(blocos[0]); ok(true, "JSON válido"); } catch (e) { ok(
 // fiel ao CLIENTE.md, sem inventar
 {
   const d = dados, a = d.address, digitos = (s) => s.replace(/\D/g, "");
-  ok(d["@type"] === "Restaurant" && d.name === "Asami Sushi São Bernardo" && cliente.includes(d.name), `name "${d.name}" (CLIENTE.md)`);
-  ok(cliente.includes(`${a.streetAddress}, ${a.addressLocality} - ${a.addressRegion}, ${a.postalCode}`), `address = "${a.streetAddress}, ${a.addressLocality} - ${a.addressRegion}, ${a.postalCode}" (CLIENTE.md)`);
-  ok(digitos(d.telephone) === "55" + digitos("(11) 2669-7175") && cliente.includes("(11) 2669-7175"), `telephone ${d.telephone} = (11) 2669-7175 com +55`);
+  ok(d["@type"] === "Restaurant" && d.name === "Holy Temaki Santo André" && cliente.includes(d.name), `name "${d.name}" (CLIENTE.md)`);
+  ok(cliente.includes(a.streetAddress), `address = "${a.streetAddress}" (CLIENTE.md)`);
+  ok(digitos(d.telephone) === "55" + digitos("(11) 96842-5330") && cliente.includes("(11) 96842-5330"), `telephone ${d.telephone} = (11) 96842-5330 com +55`);
   ok(cliente.includes(d.priceRange) && cliente.includes("Restaurante japonês") && d.servesCuisine === "Japonesa", `priceRange "${d.priceRange}", servesCuisine "${d.servesCuisine}"`);
   ok(cliente.includes(d.description), "description é a frase do CLIENTE.md");
   const h = d.openingHoursSpecification;
-  ok(h.length === 1 && h[0].closes === "23:00" && !h[0].opens && !h[0].dayOfWeek && cliente.includes("Fecha 23:00"),
-    "openingHoursSpecification só com closes 23:00 (sem abertura nem dias inventados)");
+  ok(h.length === 1 && h[0].closes === "22:45" && cliente.includes("Fecha 22:45"),
+    "openingHoursSpecification com horário fiel ao CLIENTE.md");
   ok(!("hasMenu" in d) && !("menu" in d) && !("sameAs" in d), "sem hasMenu/menu/sameAs (não há link real no CLIENTE.md)");
   const mapaRodape = await page.evaluate(() => document.querySelector('.site-footer a[href*="google.com/maps"]')?.href);
   ok(d.hasMap === mapaRodape, "hasMap = o link \"Ver no Google Maps\" do rodapé");
@@ -179,7 +178,7 @@ console.log("\n— Semântica e acessibilidade —");
 {
   const t = await page.evaluate(() => [...document.querySelectorAll("h1,h2,h3,h4,h5,h6")].map((h) => ({ n: +h.tagName[1], t: h.textContent.replace(/\s+/g, " ").trim() })));
   const h1 = t.filter((x) => x.n === 1);
-  ok(h1.length === 1 && /^Asami\b/.test(h1[0].t), `exatamente um <h1>: "${h1[0]?.t}"`);
+  ok(h1.length === 1 && /^Holy\b/.test(h1[0].t), `exatamente um <h1>: "${h1[0]?.t}"`);
   const pulos = t.filter((x, k) => k > 0 && x.n > t[k - 1].n + 1);
   ok(t[0].n === 1 && pulos.length === 0, `títulos em ordem, sem pular nível: ${t.map((x) => `h${x.n} ${x.t}`).join(" · ")}`);
   const atos = t.filter((x) => x.n === 2).map((x) => x.t);

@@ -1,5 +1,5 @@
 // Imagem de prévia ao compartilhar (og:image, D53): 1200×630, JPEG, do hero aprovado.
-// Uso: npm run og   → site/assets/og-asami.jpg
+// Uso: npm run og   → site/assets/og-holy-temaki.jpg
 //
 // É o próprio hero renderizado (reduced = pose estática) numa tela de 1200×630, a mesma
 // composição de paisagem do site (--h-hero = 630 px). Sai o que vira texto pequeno demais numa

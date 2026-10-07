@@ -36,7 +36,7 @@ const servir = async (raiz) => {
 };
 
 // site de referência: o site/ do commit aprovado, extraído numa pasta temporária
-const REF_DIR = join(tmpdir(), `asami-ref-${REF_COMMIT}`);
+const REF_DIR = join(tmpdir(), `holy-ref-${REF_COMMIT}`);
 await rm(REF_DIR, { recursive: true, force: true });
 await mkdir(REF_DIR, { recursive: true });
 for (const arq of execSync(`git ls-tree -r --name-only ${REF_COMMIT} site`, { encoding: "utf8" }).split("\n").filter(Boolean)) {
@@ -195,7 +195,7 @@ const medir = (page, ms) => page.evaluate(async (dur) => {
 // Quadros do compositor pelo trace do Chromium (PipelineReporter): o custo do feTurbulence está
 // no raster/GPU, que o rAF do thread principal não enxerga.
 async function comTrace(navegador, page, fn) {
-  const arq = join(tmpdir(), `asami-trace-${Date.now()}.json`);
+  const arq = join(tmpdir(), `holy-trace-${Date.now()}.json`);
   await navegador.startTracing(page, { path: arq, categories: ["cc", "benchmark", "disabled-by-default-devtools.timeline.frame"] });
   const r = await fn();
   await navegador.stopTracing();

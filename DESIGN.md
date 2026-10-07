@@ -1,4 +1,4 @@
-# DESIGN.md — Asami Sushi São Bernardo
+# DESIGN.md — Holy Temaki Santo André
 
 Especificação derivada de `design/mockup-full.png` (768 × 1376 px) e das fatias em
 `design/secoes/`. **O mockup é referência visual apenas.** Nenhum pixel dele entra no
@@ -144,12 +144,12 @@ Medida = altura de maiúscula (cap-height) no mockup; `font-size ≈ cap ÷ 0,72
 
 | Token | Uso | cap@768 | vw | @1440 | `clamp()` | Tracking | Line-height |
 |---|---|---|---|---|---|---|---|
-| `--fs-wordmark` | `ASAMI` do hero | **96** (remedido) | 12,5 | 180 px | mobile `clamp(4rem, 24.4vw, 22rem)` · ≥768 `clamp(4rem, 17.9vw, 22rem)` ✱ | `.045em` ✱ | `1` + `text-box: trim-both cap alphabetic` |
-| `--fs-display` | `SÃO BERNARDO DO CAMPO // CENTRO` | 15 | 2,71 | 39 px | `clamp(1.25rem, 2.7vw, 2.5rem)` | `0` ✱ (`wdth 92`) | `1.1` |
+| `--fs-wordmark` | `Holy` do hero | **96** (remedido) | 12,5 | 180 px | mobile `clamp(4rem, 24.4vw, 22rem)` · ≥768 `clamp(4rem, 17.9vw, 22rem)` ✱ | `.045em` ✱ | `1` + `text-box: trim-both cap alphabetic` |
+| `--fs-display` | `SANTO ANDRÉ // VILA ASSUNÇÃO` | 15 | 2,71 | 39 px | `clamp(1.25rem, 2.7vw, 2.5rem)` | `0` ✱ (`wdth 92`) | `1.1` |
 | `--fs-title` | `THE FEAST OF ABUNDANCE` | **9,5** ✱ | 1,78 | 25,6 px | `clamp(1.125rem, 1.78vw, 1.6rem)` ✱ | `.01em` | `1.2` ✱ |
 | `--fs-eyebrow` | *(não usado no rótulo de ato)* ✱ | 8 | 1,45 | 21 px | `clamp(.75rem, 1.45vw, 1.25rem)` | `.08em` | `1.2` |
-| `--fs-logo` | `ASAMI` da nav | 19 | 3,43 | 49 px | `clamp(1.375rem, 2.2vw, 1.75rem)` ✔︎ | `.03em` ✱ | `1` |
-| `--fs-logo-sub` | `SUSHI` | 8 | 1,45 | 21 px | `clamp(.5rem, .8vw, .7rem)` ✔︎ | `.48em` | `1` |
+| `--fs-logo` | `Holy` da nav | 19 | 3,43 | 49 px | `clamp(1.375rem, 2.2vw, 1.75rem)` ✔︎ | `.03em` ✱ | `1` |
+| `--fs-logo-sub` | `Temaki` | 8 | 1,45 | 21 px | `clamp(.5rem, .8vw, .7rem)` ✔︎ | `.48em` | `1` |
 | `--fs-hud` | `DEPTH 0.4MM / TENSION / MA` | 6,5 | 1,17 | 17 px | `clamp(.625rem, 1.17vw, .875rem)` ✔︎ | `.14em` | `1.3` |
 | `--fs-label` | `DATA`, `HORÁRIO`, `PESSOAS` | 5,5 | 1,00 | 14 px | `clamp(.5625rem, 1vw, .75rem)` | `.16em` | `1.3` |
 | `--fs-value` | `05/03`, `20:00`, `02` | 17 | 3,07 | 44 px | `clamp(1.25rem, 2.6vw, 2rem)` ✔︎ | `0` | `1` |
@@ -309,11 +309,11 @@ Legenda da coluna **Origem**:
 | 3 | Bolhas | ~14 círculos finos, 2–6 px, subindo | 14 `<i>` com `border:1px solid rgb(255 255 255/.5); border-radius:50%` + `animation: rise` | CSS |
 | 3b | Rótulo do ato | `ACT I` / `THE ARRIVAL` — **novo, não está no mockup** (D8) | `p` + `h2` no mesmo padrão dos demais atos, colunas 1–4, canto superior esquerdo abaixo da nav | TEXTO |
 | 4 | Nigiri flutuante | Nigiri de salmão suspenso acima do wordmark, luz de cima | `plate-nigiri` (fundo preto) com `mix-blend-mode: screen`, sem recorte | PLATE |
-| 5 | Wordmark `ASAMI` | Letras cromadas 3D, 60 % da largura | **`<h1>` de texto real.** Archivo 700/wdth 125 + `background: linear-gradient(180deg,#FFFEFF 0%,#C9D0DA 28%,#454E57 52%,#EAF1F9 62%,#2D3138 100%); -webkit-background-clip:text; color:transparent;` + `filter: drop-shadow(0 2px 0 #0C0E11) drop-shadow(0 0 40px rgb(201 208 218/.25))`. Bisel = `::before` idêntico deslocado 1 px | TEXTO+CSS |
+| 5 | Wordmark `Holy` | Letras cromadas 3D, 60 % da largura | **`<h1>` de texto real.** Archivo 700/wdth 125 + `background: linear-gradient(180deg,#FFFEFF 0%,#C9D0DA 28%,#454E57 52%,#EAF1F9 62%,#2D3138 100%); -webkit-background-clip:text; color:transparent;` + `filter: drop-shadow(0 2px 0 #0C0E11) drop-shadow(0 0 40px rgb(201 208 218/.25))`. Bisel = `::before` idêntico deslocado 1 px | TEXTO+CSS |
 | 6 | Piso em grade | Malha em perspectiva sob as letras, deformada ao centro | `svg` de linhas + `transform: perspective(600px) rotateX(72deg)`; ondulação com `filter:url(#wave)` (`feTurbulence`+`feDisplacementMap`) | SVG |
 | 7 | Espelho d'água | Reflexo ondulado das letras na metade inferior | Clone do `h1` com `aria-hidden`, `transform: scaleY(-1)`, `mask-image: linear-gradient(to top, #000, transparent 95%)` (a máscara é aplicada antes do flip), `filter: blur(1px) url(#ripple)` | CSS+SVG |
 | 8 | Nav — menu | Hambúrguer de 3 traços, ~28×22 @1440, à esquerda | `button aria-expanded` com 3 `span`; vira X ao abrir. Abre o overlay (camada 17) | CSS |
-| 9 | Nav — logo | `ASAMI` / `SUSHI` centralizado, branco puro | `a` com 2 linhas; `SUSHI` com `letter-spacing:.48em` + `text-indent:.48em` para compensar | TEXTO |
+| 9 | Nav — logo | `Holy` / `Temaki` centralizado, branco puro | `a` com 2 linhas; `Temaki` com `letter-spacing:.48em` + `text-indent:.48em` para compensar | TEXTO |
 | 10 | Nav — pílula `RESERVAR` | Cápsula contornada (era `432Hz` no mockup) | **D25:** `a.pill-cta` para `#ato-4`, texto `RESERVAR` + seta SVG, hover e foco visível. Só a seta em header estreito | CSS |
 | 11 | Trilho esquerdo | ~8 traços empilhados + botão circular `‹` | **Navegação por ato (D17).** `<nav aria-label="Atos">` com 4 `<a href="#ato-1…4">`; traço = `span` 1×6 px em `--text-faint`, ativo em `--chrome-100`. Os traços extras do mockup são decorativos e não entram | CSS |
 | 12 | Indicador direito | Linha vertical fina com ponto | **Progresso de scroll (D17).** `div` de 1 px + `span` circular posicionado por `--progress`; `aria-hidden` (é espelho do trilho, não controle) | CSS |
@@ -463,13 +463,13 @@ registro visual — preto, hairlines, caixa-alta com tracking largo, nenhuma cai
 | 4 | Horário | `Todos os dias · fecha às 23:00` | `p` em `--fs-label`, `--text-dim`. **Só "fecha 23:00" consta no CLIENTE.md** — o horário de abertura está em §8.2 | TEXTO |
 | 5 | Faixa de preço | `R$ 80–160 por pessoa` | `p` em `--fs-label`, `--text-dim` | TEXTO |
 | 6 | Instagram | Link único de rede | `a` com ícone SVG inline (traço 1,5 px, `currentColor`) + handle. URL em §8.3 | SVG+TEXTO |
-| 7 | Marca | Wordmark `ASAMI` / `SUSHI` **em texto**, no mesmo desenho do logo da nav (D23). O logo real (`imgi_2`, 150 px) é pequeno demais e fica **só como favicon** até chegar um arquivo melhor | TEXTO |
+| 7 | Marca | Wordmark `Holy` / `Temaki` **em texto**, no mesmo desenho do logo da nav (D23). O logo real (`logo-holy-temaki`, 150 px) fica **como favicon** | TEXTO |
 | 8 | Créditos | Linha final discreta | `p` em `--fs-label`, `--text-dim` | TEXTO |
 
 Layout **como construído** (id `#rodape`): **3 colunas iguais** no desktop — (1) wordmark
-`ASAMI SUSHI` em texto + nome + "restaurante japonês · rodízio e à la carte"; (2) endereço, um
+`Holy Temaki` em texto + nome + "restaurante japonês · temaki e hot roll"; (2) endereço, um
 link único para o Google Maps (`maps/search`, sem iframe) com "Ver no Google Maps ↗";
-(3) horário (`Fecha às 23:00`), preço (`R$ 80–160`) e telefone (`tel:`, montado da constante
+(3) horário (`Ter–Dom · 17:00–22:45`), preço (`R$ 40–60`) e telefone (`tel:`, montado da constante
 `WHATSAPP`). Empilha em 1 coluna no mobile, na mesma ordem. **Sem Instagram** (não consta no
 CLIENTE.md), sem CNPJ, sem créditos. Começa em `--ink-900` puro (o ACT IV termina num degradê
 de saída) e usa o mesmo grão global (`.section::after`).
@@ -1104,12 +1104,10 @@ Testes: `scripts/test-motion-final.mjs`. Inventário completo de todas as anima�
 | `imgi_23_…555_n.jpg` | Pessoa segurando travessa de sushi, mesa posta à frente | 1080×1350 | Nenhum na v1 (não mostra o salão, ver D20) |
 | `imgi_25_…397_n.jpg` | Camarão empanado na chapa de ferro | 1080×1350 | Recorte para a tábua esquerda |
 | `imgi_27_…611_n.jpg` | Camarão empanado com molho, close em prato | 1080×1350 | Recorte / detalhe |
-| `imgi_2_…314_n.jpg` | **Logo real:** "ASAMI Sushi" em pincelada vermelha sobre onda de Hokusai | 150×150 | **Só favicon** (D3, D23) |
+| `logo-holy-temaki.png` | **Logo real:** Holy Temaki circular | 150×150 | **Favicon e ícones** (D3, D23) |
 
-**Tratamento obrigatório (D4).** As 5 fotos são registros de celular, luz de dia, madeira
-clara e saturada, todas com **marca d'água vermelha "Asami Sushi"** no canto superior. A
-direção de arte é noturna e dessaturada. Toda foto passa por: recorte da marca d'água,
-remoção de fundo, regrade (`saturate(.55) contrast(1.15) brightness(.7)` + camada
+**Tratamento obrigatório (D4).** As fotos de referência são registros de luz de dia. A
+direção de arte é noturna e dessaturada. Toda foto passa por: recorte, remoção de fundo, regrade (`saturate(.55) contrast(1.15) brightness(.7)` + camada
 `--ink-900` em `multiply` a 35 %) e luz de contato pintada. O resultado é gravado como
 plate em `design/plates/` e copiado para `site/assets/` — **a pasta `IMAGENS/` nunca é
 referenciada pelo site**. `imgi_21` (720×1280) é curta de resolução: usar só para recortes
@@ -1133,7 +1131,7 @@ algum `srcset` usa, qualidade 70: D48), fundo preto, `mix-blend-mode: screen`, s
 | `plate-board-right` | Tábua direita do ACT II | ✅ |
 | `plate-water-tile` | — | ❌ cancelado: água procedural (D21) |
 | `plate-room` | Salão do ACT III | ⚠️ **provisório (D24)** — gerado por IA |
-| `logo-asami-150` | Favicon | ✅ só favicon (D23) |
+| `logo-holy-150` | Favicon | ✅ só favicon (D23) |
 
 `plate-room` (salão gerado) entra como **provisório** (D24, substitui D5/D20 para o ACT III).
 Fumaça é plate sintético; água é procedural (D21).
@@ -1219,7 +1217,7 @@ o efeito que já foi aplicado nas seções acima.
 | **D48** ✅ | **Imagens:** `sizes` = largura de layout real em cada regime; o mesmo `sizes` em camadas do mesmo arquivo; larguras 600/800/1200/1600 onde usadas; WebP q70. A fumaça central do hero é o LCP: `fetchpriority="high"` + `preload`. | §9, assets.md |
 | **D49** ✅ | **CSS não usado removido:** utilitários `.t-*` (menos `.t-label`) e `.col-1-5/6-8/9-12` de `base.css`. | §9 |
 | **D50** ✅ | **Entrega:** política de cache por tipo de arquivo em `DEPLOY.md` (hash → 1 ano `immutable`; HTML e JS → revalidar; imagens → 7 dias). A hospedagem não foi escolhida. `npm run bundle` confere os pesos. | §9, DEPLOY.md |
-| **D51** ✅ | **Título e descrição:** "Asami Sushi São Bernardo — Rodízio japonês no Centro" (52) e uma descrição de 139 caracteres, só com dados do CLIENTE.md; iguais nas tags Open Graph. `lang="pt-BR"` e `theme-color` = `--ink-900` já estavam certos. | §10 |
+| **D51** ✅ | **Título e descrição:** "Holy Temaki Santo André — O melhor Temaki do ABC" e uma descrição de 132 caracteres, só com dados do CLIENTE.md; iguais nas tags Open Graph. `lang="pt-BR"` e `theme-color` = `--ink-900` já estavam certos. | §10 |
 | **D52** ✅ | **Domínio num lugar só:** `seo.config.json` → `npm run build`. Sem domínio, tudo o que exige URL absoluta sai comentado, com o placeholder `https://dominio-a-definir.invalid/` (TLD reservado, nunca é um endereço real). Nenhum domínio inventado. | §10 |
 | **D53** ✅ | **Prévia ao compartilhar:** `og:type=website` (não existe o tipo OG "restaurant"), `og:locale=pt_BR`, `twitter:card=summary_large_image`. `og:image` = o hero aprovado renderizado em 1200×630, sem o texto pequeno; o wordmark vira pixel só nessa imagem, que não aparece no site. | §10 |
 | **D54** ✅ | **Ícones do logo real (150 px):** `favicon.ico` 16/32/48, `apple-touch-icon` 180 e 192 para o manifest (upscale de 1,2–1,3×). O 512 não é gerado (seria 3,4×) e pede o logo em alta. `site.webmanifest` com `display: browser`. | §10 |
@@ -1374,10 +1372,9 @@ Teste desta etapa: `scripts/test-seo.mjs`, todo local e sem serviço externo.
 - **Fidelidade ao CLIENTE.md:** conferida campo a campo.
 
 **`<head>` (D51).**
-- **Título:** "Asami Sushi São Bernardo — Rodízio japonês no Centro" (52 caracteres). Traz nome,
-  bairro e especialidade e não repete só o wordmark.
-- **Descrição (139 caracteres):** "Restaurante japonês no Centro de São Bernardo do Campo: rodízio e
-  à la carte, bebidas e sobremesas em clima familiar. R$ 80–160 por pessoa."
+- **Título:** "Holy Temaki Santo André — O melhor Temaki do ABC". Traz nome,
+  especialidade e não repete só o wordmark.
+- **Descrição (132 caracteres):** "Restaurante japonês em Vila Assunção, Santo André – SP: temaki, hot roll, yakisoba e combinados feitos com amor. R$ 40–60 por pessoa."
 - **Já estavam certos:** `lang="pt-BR"` e `theme-color` `#040507` (`--ink-900`).
 - **Fonte única:** título e descrição vêm de `TITULO`/`DESCRICAO` em `scripts/seo.mjs`, e o teste
   confere que o `<head>` e o Open Graph batem.
@@ -1390,7 +1387,7 @@ Teste desta etapa: `scripts/test-seo.mjs`, todo local e sem serviço externo.
 |---|---|---|
 | `index.html` | `<link rel="canonical">` | comentado, com o placeholder |
 | `index.html` | `og:url` | comentado |
-| `index.html` | `og:image` (URL absoluta de `assets/og-asami.jpg`) + `og:image:type/width/height/alt` | comentado |
+| `index.html` | `og:image` (URL absoluta de `assets/og-holy-temaki.jpg`) + `og:image:type/width/height/alt` | comentado |
 | `index.html`, JSON-LD | `"url"` e `"image"` | fora do JSON-LD, com comentário |
 | `sitemap.xml` | `<loc>` da raiz | `https://dominio-a-definir.invalid/`, marcado em comentário |
 | `robots.txt` | `Sitemap: <domínio>sitemap.xml` | linha comentada |
@@ -1405,7 +1402,7 @@ Teste desta etapa: `scripts/test-seo.mjs`, todo local e sem serviço externo.
   `restaurant.restaurant` era só do Facebook), `og:locale` `pt_BR`, `og:site_name`,
   `og:title` = título, `og:description` = descrição e `twitter:card` `summary_large_image`. O
   Twitter/X lê título, descrição e imagem do Open Graph.
-- **Imagem:** `assets/og-asami.jpg`, 1200×630, JPEG de 72 KB (o WhatsApp recusa acima de ~300 KB).
+- **Imagem:** `assets/og-holy-temaki.jpg`, 1200×630, JPEG de 72 KB (o WhatsApp recusa acima de ~300 KB).
   Gerada por `npm run og`:
   - é o hero aprovado, renderizado numa tela de 1200×630 em pose estática;
   - sem o cabeçalho, o rótulo do ato, o HUD e o player, que numa miniatura viram texto ilegível;
@@ -1433,11 +1430,11 @@ Teste desta etapa: `scripts/test-seo.mjs`, todo local e sem serviço externo.
 |---|---|
 | `name`, `description` | a frase do "Visão geral" |
 | `address` | rua, bairro, cidade, UF, CEP, país |
-| `telephone` | +55 11 2669-7175 |
+| `telephone` | +55 11 96842-5330 |
 | `servesCuisine` | Japonesa |
-| `priceRange` | R$ 80–160, já exibido no site |
+| `priceRange` | R$ 40–60, já exibido no site |
 | `hasMap` | o mesmo link do rodapé |
-| `openingHoursSpecification` | só `closes: 23:00` |
+| `openingHoursSpecification` | só `closes: 22:45` |
 
 Ficaram de fora:
 - **Dias e hora de abertura:** o CLIENTE.md não informa (§8.2). O placeholder está comentado no
@@ -1449,7 +1446,7 @@ Ficaram de fora:
 **robots.txt, sitemap e semântica (D56).**
 - **robots.txt:** `User-agent: *` / `Allow: /`.
 - **sitemap.xml:** só a raiz.
-- **Títulos:** um `<h1>` ("Asami Sushi São Bernardo": o wordmark mais o resto em
+- **Títulos:** um `<h1>` ("Holy Temaki Santo André": o wordmark mais o resto em
   `visually-hidden`), depois os `<h2>` ACT I–IV e o "Endereço" do rodapé, sem pular nível.
 - **Imagens:** as 14 são plates decorativos, com `alt=""` e `aria-hidden`. Faltava o
   `aria-hidden` no nigiri, que já tinha `alt=""` e por isso já saía da árvore de acessibilidade.

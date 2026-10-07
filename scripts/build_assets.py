@@ -46,7 +46,7 @@ PLATES = {
     "plate-room":        ("plate-room.jpeg.jpeg",        False),
 }
 
-LOGO = "imgi_2_412624567_893134862433209_6900609809336659314_n.jpg"
+LOGO = "logo-holy-temaki.png"
 
 
 def crush_blacks(im: Image.Image) -> Image.Image:
@@ -69,14 +69,15 @@ def main():
             im.resize((w, h), Image.LANCZOS).save(dst, "WEBP", quality=QUALITY, method=6)
             print(f"{dst.name:28} {w}x{h}  {dst.stat().st_size // 1024} KB")
 
-    logo = Image.open(IMG / LOGO).convert("RGB")
-    dst = OUT / f"logo-asami-{logo.width}.webp"
+    logo = Image.open(IMG / LOGO)
+    dst = OUT / f"logo-holy-{logo.width}.webp"
     logo.save(dst, "WEBP", quality=90, method=6)
     print(f"{dst.name:28} {logo.width}x{logo.height}  {dst.stat().st_size // 1024} KB")
 
     icones = OUT / "icons"
     icones.mkdir(exist_ok=True)
-    logo.save(icones / "favicon.ico", sizes=[(16, 16), (32, 32), (48, 48)])
+    ico_img = logo.convert("RGBA")
+    ico_img.save(icones / "favicon.ico", format="ICO", sizes=[(16, 16), (32, 32), (48, 48)])
     for nome, lado in (("apple-touch-icon.png", 180), ("icon-192.png", 192)):
         logo.resize((lado, lado), Image.LANCZOS).save(icones / nome, optimize=True)
     for f in sorted(icones.iterdir()):

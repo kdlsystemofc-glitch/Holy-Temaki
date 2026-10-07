@@ -21,7 +21,7 @@ Extensão dupla `.jpeg.jpeg` mantida na origem; os arquivos de saída têm nome 
 ### Fotos reais (`IMAGENS/`) — nunca referenciadas pelo site
 | Arquivo | Dimensão | Conteúdo real |
 |---|---|---|
-| `imgi_2` | 150×150 | Logo: "ASAMI Sushi" em pincelada vermelha sobre onda |
+| `logo-holy-temaki` | 150×150 | Logo: circular Holy Temaki |
 | `imgi_21` | 720×1280 | Mesa farta (sashimis, sushis, shimeji) |
 | `imgi_22` | 1080×1350 | Camarão na chapa de ferro sobre base de madeira |
 | `imgi_23` | 1080×1350 | Pessoa segurando travessa com sushi, mesa posta à frente |
@@ -45,7 +45,7 @@ WebP qualidade 70 (era 82 até a etapa de otimização, D48). Larguras só onde 
 | `plate-board-left-*.webp` | 600 / 800 / 1200 / 1600 | 17 / 29 / 61 / 81 KB |
 | `plate-board-right-*.webp` | 600 / 800 / 1200 / 1600 | 13 / 21 / 41 / 56 KB |
 | `plate-room-1600.webp` | 1600 (fundo em CSS, sem srcset) | 46 KB (sem black point, sem screen) |
-| `logo-asami-150.webp` | 150 | 5 KB (tamanho nativo, sem upscale; só favicon) |
+| `logo-holy-150.webp` | 150 | 5 KB (tamanho nativo, sem upscale; só favicon) |
 
 > **A variante 1600 é upscale.** As origens têm 768–1376 px de largura. Para fumaça em
 > `screen` isso não se nota; para nigiri e tábuas, a 1600 fica um pouco mais mole. Se
@@ -78,7 +78,7 @@ Abaixo da dobra, `loading="lazy"`.
 | `plate-board-right` | Rodízio, camada 6 | `plate-board-right` | `screen`. `rembg` só se o parallax exigir. |
 | `plate-smoke-floor` | Sanctum, camada 5 | `plate-smoke-floor` | Névoa de chão. `screen`. |
 | `plate-smoke-low` | Reserva, camada 3 | `plate-smoke-floor` | Mesmo arquivo, reaproveitado como bruma do ACT IV. |
-| `logo-asami` | Favicon | `logo-asami-150` | **Só favicon (D23).** O rodapé usa o wordmark em texto. |
+| `logo-holy` | Favicon | `logo-holy-150` | **Só favicon (D23).** O rodapé usa o wordmark em texto. |
 | `plate-sala` | Sanctum, camada 2 | `plate-room` | ⚠️ **TODO — provisório (D24).** Imagem normal, **sem `screen`** (não tem fundo preto): escurecida, dessaturada, máscara nas bordas. Caminho único: `--room-img` em `site/css/sanctum.css`. |
 | `plate-water-tile` | Reserva, camada 1 | — | **Cancelado (D21).** Água procedural em `feTurbulence`. |
 
